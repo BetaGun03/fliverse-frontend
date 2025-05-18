@@ -9,6 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -17,15 +18,23 @@ import { CommonModule } from '@angular/common';
   styleUrl: './header.component.css'
 })
 export class HeaderComponent {
-  searchTerm: string = '';
+  searchTerm: string = ''
+  selectedFilter: string = 'both'
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private auth: AuthService) {}
 
   onSearch() {
-    const query = this.searchTerm.trim();
+    const query = this.searchTerm.trim()
     if (query) {
       // Por ejemplo, navegar a /search?q=...
-      this.router.navigate(['/search'], { queryParams: { q: query } });
+      this.router.navigate(['/search'], { queryParams: { q: query } })
     }
+  }
+
+  onFilterSelect(filter: string) {
+    this.selectedFilter = filter;
+    // Aquí puedes hacer lo que necesites con el filtro seleccionado
+    // Por ejemplo, lanzar una búsqueda automática, emitir un evento, etc.
+    // console.log('Filtro seleccionado:', filter);
   }
 }
