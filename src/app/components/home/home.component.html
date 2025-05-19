@@ -1,1 +1,50 @@
+<mat-card class="p-8">
+  <!-- Carrousel -->
+    <div class="relative overflow-hidden w-full max-w-75 mx-auto">
 
+        <div class="flex transition-transform duration-500" [style.transform]="'translateX(-' + currentSlide * 100 + '%)'">
+            <img *ngFor="let img of slides" [src]="img" alt="Slide" class="w-full h-auto object-contain flex-shrink-0" />
+        </div>
+
+        <!-- Carrousel controllers -->
+        <button mat-icon-button (click)="prev()" class="!absolute !top-1/2 !left-2 !transform !-translate-y-1/2 !bg-white/70 hover:!bg-white !rounded-full !p-2 !z-10 !shadow-md">
+            <mat-icon>chevron_left</mat-icon>
+        </button>
+        <button mat-icon-button (click)="next()" class="!absolute !top-1/2 !right-2 !transform !-translate-y-1/2 !bg-white/70 hover:!bg-white !rounded-full !p-2 !z-10 !shadow-md">
+            <mat-icon>chevron_right</mat-icon>
+        </button>
+    </div>
+
+  <!-- Pagination buttons -->
+  <div class="flex justify-center !mt-4 sm:!mt-4 space-x-2 sm:space-x-4">
+    <button *ngFor="let _ of slides; let i = index" mat-button (click)="goTo(i)"
+            [ngClass]="{
+              '!bg-primary': i === currentSlide,
+              '!bg-gray-300': i !== currentSlide
+            }"
+            style="width: 32px; height: 32px; min-width: 0; padding: 0; border-radius: 9999px;"
+            class="hover:!scale-110 !transition-transform">
+    </button>
+  </div>
+</mat-card>
+
+<!-- Cards | Most recent contents -->
+<div class="px-4 sm:px-8 pb-8">
+  <div class="grid gap-4 mt-6"
+       [ngClass]="{
+         'grid-cols-1': true,
+         'sm:grid-cols-2': true,
+         'md:grid-cols-3': true,
+         'lg:grid-cols-4': true,
+         'xl:grid-cols-5': true
+       }">
+    <mat-card *ngFor="let product of products; let i = index" class="!p-4 !shadow-md">
+        <img mat-card-image [src]="product.image" alt="{{ product.name }}" class="!w-full !h-full !object-cover !rounded-md" />
+        <mat-card-content class="!px-1 !py-0">
+            <h3 class="!text-lg !font-semibold !text-primary">{{ product.name }}</h3>
+            <p class="!text-gray-600">{{ product.description }}</p>
+            <p class="!mt-2 !font-bold">{{ product.date }}</p>
+        </mat-card-content>
+    </mat-card>
+  </div>
+</div>
