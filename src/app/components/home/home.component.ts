@@ -3,13 +3,9 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
-
-interface Product {
-  name: string;
-  description: string;
-  date: Date;
-  image: string;
-}
+import { Content } from '../../interfaces/content';
+import { ContentService } from '../../services/content/content.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -19,47 +15,50 @@ interface Product {
 })
 
 export class HomeComponent {
-  slides: string[] = [];
-  currentSlide = 0;
-  intervalId!: any;
+  slides: Content[] = []
+  currentSlide = 0
+  intervalId!: any
+  contents: Content[] = []
 
-  products: Product[] = [];
+  constructor(public contentService: ContentService, private router: Router){}
 
-  ngOnInit(): void {
-    // Datos de ejemplo
-    this.slides = [
-      'https://fliversestorageaccount.blob.core.windows.net/fliversecontainer/MV5BOGZlN2EzOTYtMzUzOS00NTM3LTg0MTQtZDVjZGM4YmJlNWNhXkEyXkFqcGc@._V1_.jpg',
-      'https://fliversestorageaccount.blob.core.windows.net/fliversecontainer/MV5BOGZlN2EzOTYtMzUzOS00NTM3LTg0MTQtZDVjZGM4YmJlNWNhXkEyXkFqcGc@._V1_.jpg',
-      'https://fliversestorageaccount.blob.core.windows.net/fliversecontainer/MV5BOGZlN2EzOTYtMzUzOS00NTM3LTg0MTQtZDVjZGM4YmJlNWNhXkEyXkFqcGc@._V1_.jpg',
-      'https://fliversestorageaccount.blob.core.windows.net/fliversecontainer/Mi contenido 3-1745762556534-logo_fliverse_favicon.png',
-      'https://fliversestorageaccount.blob.core.windows.net/fliversecontainer/Mi contenido 3-1745762556534-logo_fliverse_favicon.png',
-      'https://fliversestorageaccount.blob.core.windows.net/fliversecontainer/Mi contenido 3-1745762556534-logo_fliverse_favicon.png',
-    ];
+  async ngOnInit(): Promise<void> 
+  {
+    this.slides = await this.contentService.getRandomContents(3, [], [])
+    this.contents = await this.contentService.getRandomContents(10, [], [])
 
-    this.products = Array.from({ length: 10 }).map((_, i) => ({
-      name: `Contenido ${i + 1}`,
-      description: `Descripción breve del contenido ${i + 1}`,
-      date: new Date(2025, 0, i + 1),
-      image: `https://fliversestorageaccount.blob.core.windows.net/fliversecontainer/MV5BOGZlN2EzOTYtMzUzOS00NTM3LTg0MTQtZDVjZGM4YmJlNWNhXkEyXkFqcGc@._V1_.jpg`
-    }));
-
-    // Auto-rotación de slides cada 5s
-    this.intervalId = setInterval(() => this.next(), 5000);
+    // Automatic slide change every 5 seconds
+    this.intervalId = setInterval(() => this.next(), 5000)
   }
 
-  ngOnDestroy(): void {
-    clearInterval(this.intervalId);
+  // Clear the interval when the component is destroyed
+  ngOnDestroy(): void 
+  {
+    clearInterval(this.intervalId)
   }
 
-  prev(): void {
-    this.currentSlide = this.currentSlide > 0 ? this.currentSlide - 1 : this.slides.length - 1;
+  // Function to go to the previous slide
+  prev(): void 
+  {
+    this.currentSlide = this.currentSlide > 0 ? this.currentSlide - 1 : this.slides.length - 1
   }
 
-  next(): void {
-    this.currentSlide = (this.currentSlide + 1) % this.slides.length;
+  // Function to go to the next slide
+  next(): void 
+  {
+    this.currentSlide = (this.currentSlide + 1) % this.slides.length
   }
 
-  goTo(index: number): void {
-    this.currentSlide = index;
+  // Function to go to a specific slide
+  goTo(index: number): void 
+  {
+    this.currentSlide = index
   }
+
+  // Function to go to a specific content (when the user clicks on a content card)
+  goToContent(content: Content): void
+  {
+    this.router.navigate(['/content', content.id], { state: { content: content } })
+  }
+
 }

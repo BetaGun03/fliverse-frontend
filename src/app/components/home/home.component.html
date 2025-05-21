@@ -1,19 +1,19 @@
-<mat-card class="p-8">
+<mat-card class="!p-8 !mt-2 !mb-6 !bg-white/70 !shadow-md">
   <!-- Carrousel -->
-    <div class="relative overflow-hidden w-full max-w-75 mx-auto">
+  <div class="relative overflow-hidden w-full max-w-75 mx-auto">
 
-        <div class="flex transition-transform duration-500" [style.transform]="'translateX(-' + currentSlide * 100 + '%)'">
-            <img *ngFor="let img of slides" [src]="img" alt="Slide" class="w-full h-auto object-contain flex-shrink-0" />
-        </div>
-
-        <!-- Carrousel controllers -->
-        <button mat-icon-button (click)="prev()" class="!absolute !top-1/2 !left-2 !transform !-translate-y-1/2 !bg-white/70 hover:!bg-white !rounded-full !p-2 !z-10 !shadow-md">
-            <mat-icon>chevron_left</mat-icon>
-        </button>
-        <button mat-icon-button (click)="next()" class="!absolute !top-1/2 !right-2 !transform !-translate-y-1/2 !bg-white/70 hover:!bg-white !rounded-full !p-2 !z-10 !shadow-md">
-            <mat-icon>chevron_right</mat-icon>
-        </button>
+    <div class="flex transition-transform duration-500" [style.transform]="'translateX(-' + currentSlide * 100 + '%)'">
+      <img (click)="goToContent(content)" *ngFor="let content of slides" [id]="'sliderContent' + content.id" [src]="content.poster" alt="Slide" class="cursor-pointer w-full h-auto object-contain flex-shrink-0 " />
     </div>
+
+    <!-- Carrousel controllers -->
+    <button mat-icon-button (click)="prev()" class="!absolute !top-1/2 !left-2 !transform !-translate-y-1/2 !bg-white/70 hover:!bg-white !rounded-full !p-2 !z-10 !shadow-md">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+    <button mat-icon-button (click)="next()" class="!absolute !top-1/2 !right-2 !transform !-translate-y-1/2 !bg-white/70 hover:!bg-white !rounded-full !p-2 !z-10 !shadow-md">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  </div>
 
   <!-- Pagination buttons -->
   <div class="flex justify-center !mt-4 sm:!mt-4 space-x-2 sm:space-x-4">
@@ -30,6 +30,7 @@
 
 <!-- Cards | Most recent contents -->
 <div class="px-4 sm:px-8 pb-8">
+  <h1 class="text-5xl font-bold mt-10">Random contents</h1>
   <div class="grid gap-4 mt-6"
        [ngClass]="{
          'grid-cols-1': true,
@@ -38,12 +39,12 @@
          'lg:grid-cols-4': true,
          'xl:grid-cols-5': true
        }">
-    <mat-card *ngFor="let product of products; let i = index" class="!p-4 !shadow-md">
-        <img mat-card-image [src]="product.image" alt="{{ product.name }}" class="!w-full !h-full !object-cover !rounded-md" />
+    <mat-card *ngFor="let content of contents; let i = index" [id]="'sliderContent' + content.id" class="!cursor-pointer !p-4 !shadow-md !bg-red-50 !border-2 !border-red-100">
+        <img (click)="goToContent(content)" mat-card-image [src]="content.poster" alt="{{ content.title }}" class="!w-full !h-full !object-cover !rounded-md" />
         <mat-card-content class="!px-1 !py-0">
-            <h3 class="!text-lg !font-semibold !text-primary">{{ product.name }}</h3>
-            <p class="!text-gray-600">{{ product.description }}</p>
-            <p class="!mt-2 !font-bold">{{ product.date }}</p>
+            <h3 class="!text-lg !font-semibold !text-primary">{{ content.title }}</h3>
+            <p class="!text-gray-600">{{ content.synopsis }}</p>
+            <p class="!mt-2 !font-bold">{{ content.type | titlecase }}</p>
         </mat-card-content>
     </mat-card>
   </div>

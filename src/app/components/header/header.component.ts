@@ -23,18 +23,22 @@ export class HeaderComponent {
 
   constructor(private router: Router, private auth: AuthService) {}
 
-  onSearch() {
+  onSearch() 
+  {
     const query = this.searchTerm.trim()
-    if (query) {
+    if (query) 
+    {
       // Por ejemplo, navegar a /search?q=...
       this.router.navigate(['/search'], { queryParams: { q: query } })
     }
   }
 
-  onFilterSelect(filter: string) {
+  onFilterSelect(filter: string) 
+  {
     this.selectedFilter = filter;
     // Aquí puedes hacer lo que necesites con el filtro seleccionado
     // Por ejemplo, lanzar una búsqueda automática, emitir un evento, etc.
     // console.log('Filtro seleccionado:', filter);
   }
+
 }
