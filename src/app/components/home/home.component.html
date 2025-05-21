@@ -39,13 +39,16 @@
          'lg:grid-cols-4': true,
          'xl:grid-cols-5': true
        }">
-    <mat-card *ngFor="let content of contents; let i = index" [id]="'sliderContent' + content.id" class="!cursor-pointer !p-4 !shadow-md !bg-red-50 !border-2 !border-red-100">
+    <mat-card *ngFor="let content of contents; let i = index" [id]="'sliderContent' + content.id" class="!cursor-pointer !p-4 !shadow-md !bg-red-50 !border-2 !border-red-100 transition-transform hover:scale-105 hover:!shadow-lg hover:!border-red-300 hover:!border-4">
         <img (click)="goToContent(content)" mat-card-image [src]="content.poster" alt="{{ content.title }}" class="!w-full !h-full !object-cover !rounded-md" />
-        <mat-card-content class="!px-1 !py-0">
-            <h3 class="!text-lg !font-semibold !text-primary">{{ content.title }}</h3>
-            <p class="!text-gray-600">{{ content.synopsis }}</p>
-            <p class="!mt-2 !font-bold">{{ content.type | titlecase }}</p>
-        </mat-card-content>
+      <mat-card-content class="!px-1 !py-0">
+        <h3 class="!text-2xl !font-semibold !text-primary">{{ content.title }}</h3>
+        <div class="flex items-center justify-between mt-2">
+            <p class="!text-gray-600 text-md">{{ content.duration }} min</p>
+            <p class="!text-gray-600 text-md ml-4">{{ content.release_date | date:"yyyy" }}</p>
+        </div>
+        <p class="!mt-4 !font-bold p-2 rounded-xl text-center bg-red-700 text-white">{{ content.type | titlecase }}</p>
+      </mat-card-content>
     </mat-card>
   </div>
 </div>
