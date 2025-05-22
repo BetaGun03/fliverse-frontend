@@ -7,10 +7,11 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { GoogleloginComponent } from "../googlelogin/googlelogin.component";
 
 @Component({
   selector: 'app-login',
-  imports: [MatFormFieldModule, MatCheckboxModule, MatInputModule, ReactiveFormsModule, CommonModule, MatProgressSpinnerModule],
+  imports: [MatFormFieldModule, MatCheckboxModule, MatInputModule, ReactiveFormsModule, CommonModule, MatProgressSpinnerModule, GoogleloginComponent],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
