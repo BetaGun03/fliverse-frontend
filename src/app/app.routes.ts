@@ -8,4 +8,6 @@ export const routes: Routes = [
     { path: "content/:id", loadComponent: () => import('./components/content/content.component').then(m => m.ContentComponent) },
     { path: "privacypolicies", component: PrivacypoliciesComponent },
     { path: "termsofservice", component: ServiceconditionsComponent },
+    { path: "login", loadComponent: () => import('./components/login/login.component').then(m => m.LoginComponent) },
+    { path: "register", loadComponent: () => import('./components/register/register.component').then(m => m.RegisterComponent) },
 ];
