@@ -1,0 +1,9 @@
+<footer class="w-full bg-red-100 py-6 border-t-2 border-red-200 flex flex-col items-center">
+  <nav class="flex flex-wrap justify-center gap-x-8 gap-y-2 mb-2 w-full px-4">
+    <a [routerLink]="['/help']" class="text-red-700 hover:underline font-semibold">Help</a>
+    <a [routerLink]="['/privacypolicies']" class="text-red-700 hover:underline font-semibold">Privacy policies</a>
+    <a [routerLink]="['/termsofservice']" class="text-red-700 hover:underline font-semibold">Terms of service</a>
+    <a [routerLink]="['/']" class="text-red-700 hover:underline font-semibold">Home</a>
+  </nav>
+  <span class="text-gray-500 text-sm text-center">&copy; {{ currentYear }} Fliverse. All rights reserved.</span>
+</footer>

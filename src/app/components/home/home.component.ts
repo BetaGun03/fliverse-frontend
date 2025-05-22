@@ -19,6 +19,7 @@ export class HomeComponent {
   currentSlide = 0
   intervalId!: any
   contents: Content[] = []
+  latestContents: Content[] = []
 
   constructor(public contentService: ContentService, private router: Router){}
 
@@ -26,6 +27,7 @@ export class HomeComponent {
   {
     this.slides = await this.contentService.getRandomContents(3, [], [])
     this.contents = await this.contentService.getRandomContents(10, [], [])
+    this.latestContents = await this.contentService.getLatestContents(5)
 
     // Automatic slide change every 5 seconds
     this.intervalId = setInterval(() => this.next(), 5000)

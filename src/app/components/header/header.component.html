@@ -20,15 +20,15 @@
 
       <mat-menu #filterMenu="matMenu" [overlapTrigger]="false" xPosition="before">
         <button mat-menu-item (click)="onFilterSelect('movies')" [ngClass]="{'bg-primary/10 font-bold text-primary': selectedFilter === 'movies'}" class="hover:!text-primary">
-          <mat-icon *ngIf="selectedFilter === 'movies'" class="mr-2">check</mat-icon>
+          <mat-icon *ngIf="selectedFilter === 'movies'" class="mr-2 !text-primary">check</mat-icon>
           Movies
         </button>
         <button mat-menu-item (click)="onFilterSelect('series')" [ngClass]="{'bg-primary/10 font-bold text-primary': selectedFilter === 'series'}" class="hover:!text-primary">
-          <mat-icon *ngIf="selectedFilter === 'series'" class="mr-2">check</mat-icon>
+          <mat-icon *ngIf="selectedFilter === 'series'" class="mr-2 !text-primary">check</mat-icon>
           Series
         </button>
         <button mat-menu-item (click)="onFilterSelect('both')" [ngClass]="{'bg-primary/10 font-bold text-primary': selectedFilter === 'both'}" class="hover:!text-primary">
-          <mat-icon *ngIf="selectedFilter === 'both'" class="mr-2">check</mat-icon>
+          <mat-icon *ngIf="selectedFilter === 'both'" class="mr-2 !text-primary">check</mat-icon>
           Both
         </button>
       </mat-menu>
