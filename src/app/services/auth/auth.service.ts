@@ -15,7 +15,7 @@ export class AuthService {
   // Function to login the user using the API endpoint. It returns a Promise of the token
   async login(username: string, password: string): Promise<string>
   {
-    let url = "https://api.fliverse.es/users/login"
+    const url = "https://api.fliverse.es/users/login"
 
     if(!username || !password)
     {
@@ -41,6 +41,64 @@ export class AuthService {
       token: response.data.token,
     }
     
+    this.isLoggedIn = true
+    return response.data.token
+  }
+
+  // Function to register the user using the API endpoint. It returns a Promise of the token
+  async register(username: string, password: string, email?: string, name?:string, birthdate?:Date, profilePic?:File): Promise<string>
+  {
+    const url = "https://api.fliverse.es/users/register"
+
+    if(!username || !password)
+    {
+      throw new Error("Username and password are required")
+    }
+    else if(username.trim() === "" || password.trim() === "")
+    {
+      throw new Error("Username and password cannot be empty")
+    }
+
+    const formData = new FormData()
+    formData.append("username", username)
+    formData.append("password", password)
+
+    if(email)
+    {
+      formData.append("email", email)
+    }
+
+    if(name)
+    {
+      formData.append("name", name)
+    }
+
+    if(birthdate)
+    {
+      formData.append("birthdate", birthdate.toString())
+    }
+
+    if(profilePic)
+    {
+      formData.append("profile_pic", profilePic)
+    }
+
+    const response = await axios.post(url, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+
+    if (response.status !== 201) 
+    {
+      throw new Error("Registration failed")
+    }
+
+    this.user = {
+      username: response.data.user.username,
+      token: response.data.token,
+    }
+
     this.isLoggedIn = true
     return response.data.token
   }

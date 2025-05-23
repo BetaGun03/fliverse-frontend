@@ -1,5 +1,5 @@
 <section class="!px-4 !md:!px-0 !flex !flex-col !items-center !justify-center !min-h-screen !bg-gradient-to-br !from-red-300 !via-red-400 !to-red-500">
-    <div class="!w-full !max-w-md !bg-white !rounded-2xl !shadow-xl !border-2 !border-red-200 !p-8">
+    <div class="!w-full !max-w-md !bg-white !rounded-2xl !shadow-xl !border-2 !border-red-200 !p-8 !mt-12 !mb-12">
 
         <div class="!flex !flex-col !items-center !mb-6">
             <img class="!w-25 !h-25 !mb-2" src="/logo.png" alt="Fliverse logo">
@@ -8,22 +8,30 @@
 
         <form [formGroup]="loginForm" (ngSubmit)="loginSubmit()" class="!space-y-6">
             
+            <!-- Error message -->
             <div *ngIf="errorMsg" class="!mb-4 !p-3 !rounded !bg-red-100 !text-red-700 !text-center !font-semibold">
                 {{ errorMsg }}
             </div>
 
+            <!-- Username input -->
             <mat-form-field appearance="fill" class="!w-full">
                 <mat-label class="!text-black">Username</mat-label>
-                <input matInput type="email" formControlName="username" placeholder="example" required>
+                <input matInput type="text" formControlName="username" placeholder="example" required>
             </mat-form-field>
+
+            <!-- Password input -->
             <mat-form-field appearance="fill" class="!w-full">
                 <mat-label class="!text-black">Password</mat-label>
                 <input matInput type="password" formControlName="password" placeholder="••••••••" required>
             </mat-form-field>
+
+            <!-- Remember me checkbox -->
             <div class="!flex !items-center !justify-between">
                 <mat-checkbox formControlName="rememberMe" class="!text-sm !text-gray-600">Remember me</mat-checkbox>
                 <a href="#" class="!text-sm !font-medium !text-red-600 hover:!underline">Forgot your password?</a>
             </div>
+
+            <!-- Login button -->
             <button mat-raised-button color="primary" type="submit"
                 class="!w-full !flex !justify-center !items-center !text-white !bg-red-600 hover:!bg-red-700 !focus:ring-4 !focus:outline-none !focus:ring-red-300 !font-bold !rounded-lg !text-base !px-5 !py-2.5 !text-center !transition"
                 style="background-color: #dc2626;"
@@ -33,12 +41,25 @@
                     <mat-progress-spinner diameter="24" mode="indeterminate" strokeWidth="4" color="accent"></mat-progress-spinner>
                 </ng-template>
             </button>
+            
+            <!-- Register link -->
             <p class="!text-sm !text-center !text-gray-500">
                 Don't have an account?
                 <a routerLink="/register" class="!font-medium !text-red-600 hover:!underline">Register</a>
             </p>
 
-            <app-googlelogin class="items-center text-center"></app-googlelogin>
+            <!-- Visual separator before Google login -->
+            <div class="!flex !items-center !my-4">
+                <hr class="!flex-grow !border-t !border-gray-300">
+                <span class="!mx-4 !text-gray-400 !font-semibold">or</span>
+                <hr class="!flex-grow !border-t !border-gray-300">
+            </div>
+
+            <!-- Google login button -->
+            <div class="flex justify-center">
+                <app-googlelogin></app-googlelogin>
+            </div>
+
         </form>
     </div>
 </section>

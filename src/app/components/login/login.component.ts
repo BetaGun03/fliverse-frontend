@@ -5,13 +5,13 @@ import { MatInputModule } from '@angular/material/input';
 import { AuthService } from '../../services/auth/auth.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { GoogleloginComponent } from "../googlelogin/googlelogin.component";
 
 @Component({
   selector: 'app-login',
-  imports: [MatFormFieldModule, MatCheckboxModule, MatInputModule, ReactiveFormsModule, CommonModule, MatProgressSpinnerModule, GoogleloginComponent],
+  imports: [MatFormFieldModule, MatCheckboxModule, MatInputModule, ReactiveFormsModule, CommonModule, MatProgressSpinnerModule, GoogleloginComponent, RouterModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
@@ -26,8 +26,8 @@ export class LoginComponent {
   {
     // Initialize the login form with form controls and validators
     this.loginForm = this.fb.group({
-      username: ['', [ Validators.required ] ],
-      password: ['', [ Validators.required, Validators.minLength(8) ] ],
+      username  : ['', [ Validators.required ] ],
+      password  : ['', [ Validators.required, Validators.minLength(8) ] ],
       rememberMe: [false]
     })
   }
@@ -36,7 +36,7 @@ export class LoginComponent {
   changeRememberMe() 
   {
     this.rememberMe = !this.rememberMe
-    this.loginForm.get('remember')?.setValue(this.rememberMe)
+    this.loginForm.get('rememberMe')?.setValue(this.rememberMe)
   }
 
   // Function to handle the login form submission
@@ -62,7 +62,12 @@ export class LoginComponent {
       {
         localStorage.setItem('token', token)
       }
-    
+      else
+      {
+        // Remove the token from local storage if it exists, when the remember me checkbox is not checked
+        localStorage.removeItem('token')
+      }
+
       this.router.navigate(['/'])
     } catch (e: any) {
       if (e.response && e.response.status === 404) 
