@@ -1,79 +1,146 @@
+<!-- =========================
+  Carrousel Section
+========================= -->
 <mat-card class="!p-8 !mt-2 !mb-6 !bg-white/70 !shadow-md">
-  <!-- Carrousel -->
   <div class="relative overflow-hidden w-full max-w-75 mx-auto">
-
-    <div class="flex transition-transform hover:scale-105 duration-500" [style.transform]="'translateX(-' + currentSlide * 100 + '%)'">
-      <img (click)="goToContent(content)" *ngFor="let content of slides" [id]="'sliderContent' + content.id" [src]="content.poster" alt="Slide" class="cursor-pointer w-full h-auto object-contain flex-shrink-0 " />
-    </div>
-
-    <!-- Carrousel controllers -->
-    <button mat-icon-button (click)="prev()" class="!absolute !top-1/2 !left-2 !transform !-translate-y-1/2 !bg-white/70 hover:!bg-white !rounded-full !p-2 !z-10 !shadow-md">
-      <mat-icon>chevron_left</mat-icon>
-    </button>
-    <button mat-icon-button (click)="next()" class="!absolute !top-1/2 !right-2 !transform !-translate-y-1/2 !bg-white/70 hover:!bg-white !rounded-full !p-2 !z-10 !shadow-md">
-      <mat-icon>chevron_right</mat-icon>
-    </button>
-  </div>
-
-  <!-- Pagination buttons -->
-  <div class="flex justify-center !mt-4 sm:!mt-4 space-x-2 sm:space-x-4">
-    <button *ngFor="let _ of slides; let i = index" mat-button (click)="goTo(i)"
-            [ngClass]="{
-              '!bg-primary': i === currentSlide,
-              '!bg-gray-300': i !== currentSlide
-            }"
-            style="width: 32px; height: 32px; min-width: 0; padding: 0; border-radius: 9999px;"
-            class="hover:!scale-110 !transition-transform">
-    </button>
+    <!-- Carrousel: Show when not loading -->
+    <ng-container *ngIf="!isLoading; else skeletonCarrousel">
+      <div class="flex transition-transform hover:scale-105 duration-500" [style.transform]="'translateX(-' + currentSlide * 100 + '%)'">
+        <!-- Carrousel Slides -->
+        <img
+          (click)="goToContent(content)"
+          *ngFor="let content of slides"
+          [id]="'sliderContent' + content.id"
+          [src]="content.poster"
+          alt="Slide"
+          class="cursor-pointer w-full h-auto object-contain flex-shrink-0 "
+        />
+      </div>
+      <!-- Carrousel Navigation Buttons -->
+      <button mat-icon-button (click)="prev()" class="!absolute !top-1/2 !left-2 !transform !-translate-y-1/2 !bg-white/70 hover:!bg-white !rounded-full !p-2 !z-10 !shadow-md">
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+      <button mat-icon-button (click)="next()" class="!absolute !top-1/2 !right-2 !transform !-translate-y-1/2 !bg-white/70 hover:!bg-white !rounded-full !p-2 !z-10 !shadow-md">
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+      <!-- Carrousel Pagination Dots -->
+      <div class="flex justify-center !mt-4 sm:!mt-4 space-x-2 sm:space-x-4">
+        <button
+          *ngFor="let _ of slides; let i = index"
+          mat-button
+          (click)="goTo(i)"
+          [ngClass]="{
+            '!bg-primary': i === currentSlide,
+            '!bg-gray-300': i !== currentSlide
+          }"
+          style="width: 32px; height: 32px; min-width: 0; padding: 0; border-radius: 9999px;"
+          class="hover:!scale-110 !transition-transform">
+        </button>
+      </div>
+    </ng-container>
+    <!-- Carrousel Skeleton Loader -->
+    <ng-template #skeletonCarrousel>
+      <app-carrousel></app-carrousel>
+    </ng-template>
   </div>
 </mat-card>
 
-<!-- Cards | Most recent contents -->
+<!-- =========================================================
+  Most Recent Contents Section
+========================================================= -->
 <div class="px-4 sm:px-8 pb-8">
   <h1 class="text-5xl font-bold mt-10">Recent contents</h1>
-  <div class="grid gap-4 mt-6"
-       [ngClass]="{
-         'grid-cols-1': true,
-         'sm:grid-cols-2': true,
-         'md:grid-cols-3': true,
-         'lg:grid-cols-4': true,
-         'xl:grid-cols-5': true
-       }">
-    <mat-card *ngFor="let content of latestContents; let i = index" [id]="'sliderContent' + content.id" class="!cursor-pointer !p-4 !shadow-md !bg-red-50 !border-2 !border-red-100 transition-transform hover:scale-105 hover:!shadow-lg hover:!border-red-300 hover:!border-4">
-        <img (click)="goToContent(content)" mat-card-image [src]="content.poster" alt="{{ content.title }}" class="!w-full !h-full !object-cover !rounded-md" />
-      <mat-card-content class="!px-1 !py-0">
-        <h3 class="!text-2xl !font-semibold !text-primary">{{ content.title }}</h3>
-        <div class="flex items-center justify-between mt-2">
+  <div
+    class="grid gap-4 mt-6"
+    [ngClass]="{
+      'grid-cols-1': true,
+      'sm:grid-cols-2': true,
+      'md:grid-cols-3': true,
+      'lg:grid-cols-4': true,
+      'xl:grid-cols-5': true
+    }"
+  >
+    <!-- Recent Contents: Show when not loading -->
+    <ng-container *ngIf="!isLoading; else skeletonCardsRecent">
+      <mat-card
+        *ngFor="let content of latestContents; let i = index"
+        [id]="'sliderContent' + content.id"
+        class="!cursor-pointer !p-4 !shadow-md !bg-red-50 !border-2 !border-red-100 transition-transform hover:scale-105 hover:!shadow-lg hover:!border-red-300 hover:!border-4"
+      >
+        <!-- Content Poster -->
+        <img
+          (click)="goToContent(content)"
+          mat-card-image
+          [src]="content.poster"
+          alt="{{ content.title }}"
+          class="!w-full !h-full !object-cover !rounded-md"
+        />
+        <mat-card-content class="!px-1 !py-0">
+          <!-- Content Title -->
+          <h3 class="!text-2xl !font-semibold !text-primary">{{ content.title }}</h3>
+          <!-- Content Details -->
+          <div class="flex items-center justify-between mt-2">
             <p class="!text-gray-600 text-md">{{ content.duration }} min</p>
             <p class="!text-gray-600 text-md ml-4">{{ content.release_date | date:"yyyy" }}</p>
-        </div>
-        <p class="!mt-4 !font-bold p-2 rounded-xl text-center bg-red-700 text-white">{{ content.type | titlecase }}</p>
-      </mat-card-content>
-    </mat-card>
+          </div>
+          <!-- Content Type -->
+          <p class="!mt-4 !font-bold p-2 rounded-xl text-center bg-red-700 text-white">{{ content.type | titlecase }}</p>
+        </mat-card-content>
+      </mat-card>
+    </ng-container>
+    <!-- Recent Contents Skeleton Loader -->
+    <ng-template #skeletonCardsRecent>
+      <app-card *ngFor="let _ of skeletonArray"></app-card>
+    </ng-template>
   </div>
 </div>
 
-<!-- Cards | Most recent contents -->
+<!-- =========================================================
+  Random Contents Section
+========================================================= -->
 <div class="px-4 sm:px-8 pb-8">
   <h1 class="text-5xl font-bold mt-10">Random contents</h1>
-  <div class="grid gap-4 mt-6"
-       [ngClass]="{
-         'grid-cols-1': true,
-         'sm:grid-cols-2': true,
-         'md:grid-cols-3': true,
-         'lg:grid-cols-4': true,
-         'xl:grid-cols-5': true
-       }">
-    <mat-card *ngFor="let content of contents; let i = index" [id]="'sliderContent' + content.id" class="!cursor-pointer !p-4 !shadow-md !bg-red-50 !border-2 !border-red-100 transition-transform hover:scale-105 hover:!shadow-lg hover:!border-red-300 hover:!border-4">
-        <img (click)="goToContent(content)" mat-card-image [src]="content.poster" alt="{{ content.title }}" class="!w-full !h-full !object-cover !rounded-md" />
-      <mat-card-content class="!px-1 !py-0">
-        <h3 class="!text-2xl !font-semibold !text-primary">{{ content.title }}</h3>
-        <div class="flex items-center justify-between mt-2">
+  <div
+    class="grid gap-4 mt-6"
+    [ngClass]="{
+      'grid-cols-1': true,
+      'sm:grid-cols-2': true,
+      'md:grid-cols-3': true,
+      'lg:grid-cols-4': true,
+      'xl:grid-cols-5': true
+    }"
+  >
+    <!-- Random Contents: Show when not loading -->
+    <ng-container *ngIf="!isLoading; else skeletonCardsRandom">
+      <mat-card
+        *ngFor="let content of contents; let i = index"
+        [id]="'sliderContent' + content.id"
+        class="!cursor-pointer !p-4 !shadow-md !bg-red-50 !border-2 !border-red-100 transition-transform hover:scale-105 hover:!shadow-lg hover:!border-red-300 hover:!border-4"
+      >
+        <!-- Content Poster -->
+        <img
+          (click)="goToContent(content)"
+          mat-card-image
+          [src]="content.poster"
+          alt="{{ content.title }}"
+          class="!w-full !h-full !object-cover !rounded-md"
+        />
+        <mat-card-content class="!px-1 !py-0">
+          <!-- Content Title -->
+          <h3 class="!text-2xl !font-semibold !text-primary">{{ content.title }}</h3>
+          <!-- Content Details -->
+          <div class="flex items-center justify-between mt-2">
             <p class="!text-gray-600 text-md">{{ content.duration }} min</p>
             <p class="!text-gray-600 text-md ml-4">{{ content.release_date | date:"yyyy" }}</p>
-        </div>
-        <p class="!mt-4 !font-bold p-2 rounded-xl text-center bg-red-700 text-white">{{ content.type | titlecase }}</p>
-      </mat-card-content>
-    </mat-card>
+          </div>
+          <!-- Content Type -->
+          <p class="!mt-4 !font-bold p-2 rounded-xl text-center bg-red-700 text-white">{{ content.type | titlecase }}</p>
+        </mat-card-content>
+      </mat-card>
+    </ng-container>
+    <!-- Random Contents Skeleton Loader -->
+    <ng-template #skeletonCardsRandom>
+      <app-card *ngFor="let _ of skeletonArray"></app-card>
+    </ng-template>
   </div>
 </div>

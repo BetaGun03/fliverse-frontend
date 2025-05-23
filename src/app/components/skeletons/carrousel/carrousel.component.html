@@ -1,0 +1,21 @@
+<mat-card class="!p-8 !mt-2 !mb-6 !bg-white/70 !shadow-md">
+  <div class="relative overflow-hidden w-full max-w-75 mx-auto h-72 flex items-center justify-center">
+    <!-- Slide principal skeleton -->
+    <div class="w-full h-56 bg-gray-200 rounded-lg skeleton-relative-carrousel flex items-center justify-center">
+      <div class="skeleton-shimmer-carrousel"></div>
+    </div>
+    <!-- Carrousel controllers (disabled) -->
+    <button mat-icon-button disabled class="!absolute !top-1/2 !left-2 !transform !-translate-y-1/2 !bg-white/70 !rounded-full !p-2 !z-10 !shadow-md opacity-60 cursor-default">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+    <button mat-icon-button disabled class="!absolute !top-1/2 !right-2 !transform !-translate-y-1/2 !bg-white/70 !rounded-full !p-2 !z-10 !shadow-md opacity-60 cursor-default">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  </div>
+  <!-- Pagination dots skeleton -->
+  <div class="flex justify-center !mt-4 sm:!mt-4 space-x-2 sm:space-x-4">
+    <div *ngFor="let _ of [1,2,3]" class="w-8 h-8 rounded-full bg-gray-300 skeleton-relative-carrousel">
+      <div class="skeleton-shimmer-carrousel"></div>
+    </div>
+  </div>
+</mat-card>
