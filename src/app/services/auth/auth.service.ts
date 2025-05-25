@@ -12,6 +12,24 @@ export class AuthService {
 
   constructor() { }
 
+  // Function to change the login status of the user
+  public changeLoginStatus(status: boolean): void
+  {
+    this.isLoggedIn = status
+  }
+
+  // Function to change the user object
+  public changeUser(user: User): void
+  {
+    this.user = user
+  }
+
+  // Function to set the user token
+  public setToken(token: string): void
+  {
+    this.user.token = token
+  }
+
   // Function to login the user using the API endpoint. It returns a Promise of the token
   async login(username: string, password: string): Promise<string>
   {

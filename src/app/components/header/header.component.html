@@ -41,8 +41,9 @@
     <button [disableRipple]="true" mat-button class="!border !border-gray-300 !rounded-lg text-gray-700 text-sm !shadow hover:!text-primary hover:!bg-red-50">Advanced search</button>
     <button [disableRipple]="true" mat-button class="!border !border-gray-300 !rounded-lg text-gray-700 text-sm !shadow hover:!text-primary hover:!bg-red-50">Watching</button>
     <button [disableRipple]="true" mat-button class="!border !border-gray-300 !rounded-lg text-gray-700 text-sm !shadow hover:!text-primary hover:!bg-red-50">Lists</button>
-    <button [disableRipple]="true" mat-button class="!border !border-gray-300 !rounded-lg text-gray-700 text-sm !shadow hover:!text-primary hover:!bg-red-50">User</button>
-    <button [routerLink]="['/login']" [disableRipple]="true" mat-button class="!border !border-gray-300 !rounded-lg text-gray-700 text-sm !shadow hover:!text-primary hover:!bg-red-50">Login</button>
+    <button *ngIf="auth.isAuthenticated()" [disableRipple]="true" mat-button class="!border !border-gray-300 !rounded-lg text-gray-700 text-sm !shadow hover:!text-primary hover:!bg-red-50">User</button>
+    <button *ngIf="!auth.isAuthenticated()" [routerLink]="['/login']" [disableRipple]="true" mat-button class="!border !border-gray-300 !rounded-lg text-gray-700 text-sm !shadow hover:!text-primary hover:!bg-red-50">Login</button>
+    <button *ngIf="!auth.isAuthenticated()" [routerLink]="['/register']" [disableRipple]="true" mat-button class="!border !border-gray-300 !rounded-lg text-gray-700 text-sm !shadow hover:!text-primary hover:!bg-red-50">Register</button>
   </nav>
 
   <!-- Hamburguer menu, it only appears when screen's width is too small -->
@@ -56,8 +57,9 @@
       <button mat-menu-item class="text-gray-700 text-sm hover:!text-primary">Advanced search</button>
       <button mat-menu-item class="text-gray-700 text-sm hover:!text-primary">Watching</button>
       <button mat-menu-item class="text-gray-700 text-sm hover:!text-primary">Lists</button>
-      <button mat-menu-item class="text-gray-700 text-sm hover:!text-primary">User</button>
-      <button [routerLink]="['/login']" mat-menu-item class="text-gray-700 text-sm hover:!text-primary">Login</button>
+      <button *ngIf="auth.isAuthenticated()" mat-menu-item class="text-gray-700 text-sm hover:!text-primary">User</button>
+      <button *ngIf="!auth.isAuthenticated()" [routerLink]="['/login']" mat-menu-item class="text-gray-700 text-sm hover:!text-primary">Login</button>
+      <button *ngIf="!auth.isAuthenticated()" [routerLink]="['/register']" mat-menu-item class="text-gray-700 text-sm hover:!text-primary">Register</button>
     </mat-menu>
 
   </div>

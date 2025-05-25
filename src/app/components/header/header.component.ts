@@ -18,10 +18,22 @@ import { AuthService } from '../../services/auth/auth.service';
   styleUrl: './header.component.css'
 })
 export class HeaderComponent {
+
   searchTerm: string = ''
   selectedFilter: string = 'both'
 
-  constructor(private router: Router, private auth: AuthService) {}
+  constructor(private router: Router, public auth: AuthService) {}
+
+  ngOnInit()
+  {
+    let token = localStorage.getItem("token")
+
+    if(token)
+    {
+      this.auth.setToken(token)
+      this.auth.changeLoginStatus(true)
+    }
+  }
 
   onSearch() 
   {
