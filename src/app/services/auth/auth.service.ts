@@ -27,7 +27,14 @@ export class AuthService {
   // Function to set the user token
   public setToken(token: string): void
   {
-    this.user.token = token
+    if (!this.user) 
+    {
+      this.user = { token: token } // Initialize user with token if it doesn't exist
+    } 
+    else 
+    {
+      this.user.token = token
+    }
   }
 
   // Function to login the user using the API endpoint. It returns a Promise of the token

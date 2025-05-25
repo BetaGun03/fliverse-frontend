@@ -24,17 +24,6 @@ export class HeaderComponent {
 
   constructor(private router: Router, public auth: AuthService) {}
 
-  ngOnInit()
-  {
-    let token = localStorage.getItem("token")
-
-    if(token)
-    {
-      this.auth.setToken(token)
-      this.auth.changeLoginStatus(true)
-    }
-  }
-
   onSearch() 
   {
     const query = this.searchTerm.trim()
