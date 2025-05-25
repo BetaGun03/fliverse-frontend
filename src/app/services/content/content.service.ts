@@ -153,16 +153,16 @@ export class ContentService {
 
       if (response.status === 200 && response.data) 
       {
-        const averageRating = await this.getContentAverageRatingById(id) // Fetch the average rating
+        let averageRating = 0
+        try {
+          averageRating = await this.getContentAverageRatingById(id)
+        } 
+        catch (ratingError) {
+          console.error('Error fetching content rating:', ratingError)
+          averageRating = 0
+        }
 
-        if(averageRating !== undefined)
-        {
-          response.data.average_rating = averageRating
-        }
-        else
-        {
-          response.data.average_rating = 0 // Default to 0 if no rating is found
-        }
+        response.data.average_rating = averageRating ?? 0
 
         const content = response.data
         return {
