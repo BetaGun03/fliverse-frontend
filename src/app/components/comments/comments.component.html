@@ -1,0 +1,61 @@
+<!-- Comments Section Container -->
+<div class="mt-10">
+
+    <!-- Section Title -->
+    <h2 class="text-2xl font-bold text-red-700 mb-4 flex items-center gap-2">
+        <mat-icon color="primary">chat</mat-icon>
+        Comments
+    </h2>
+
+    <!-- Add Comment Form Card -->
+    <mat-card class="mb-6 p-4">
+        <form (ngSubmit)="addComment()" #commentForm="ngForm" class="flex items-end gap-4">
+            
+            <!-- Comment Textarea Field -->
+            <mat-form-field appearance="fill" color="warn" class="flex-1" style="--mdc-filled-text-field-focus-active-indicator-color:#d32f2f; --mdc-filled-text-field-active-indicator-color:#d32f2f; --mdc-filled-text-field-caret-color:#d32f2f;">
+                <mat-label style="color:#d32f2f !important;">Write your comment...</mat-label>
+                <textarea
+                matInput
+                name="comment"
+                [(ngModel)]="newComment"
+                required
+                rows="2"
+                cdkTextareaAutosize
+                #autosize="cdkTextareaAutosize"
+                class="resize-none"
+                style="caret-color:#d32f2f !important;"
+                ></textarea>
+            </mat-form-field>
+
+            <!-- Submit Button -->
+            <button mat-fab color="primary" type="submit" [disabled]="!commentForm.form.valid" aria-label="Add comment" >
+                <mat-icon>send</mat-icon>
+            </button>
+        </form>
+    </mat-card>
+
+    <!-- No Comments Message -->
+    <div *ngIf="comments.length === 0" class="text-gray-500 italic text-center">
+        No comments yet.
+    </div>
+
+    <!-- Comments List -->
+    <div class="flex flex-col gap-4">
+        <mat-card *ngFor="let comment of comments" class="shadow-md bg-white p-3 rounded-lg" >
+
+            <!-- Comment Header: Icon and Date -->
+            <div class="flex items-center gap-2 mb-1">
+                <mat-icon color="accent" class="!text-base">person</mat-icon>
+                <span class="text-sm text-gray-500">
+                    {{ comment.comment_date | date }}
+                </span>
+            </div>
+
+            <!-- Comment Text -->
+            <div class="text-gray-800 text-base whitespace-pre-line pl-7">
+                {{ comment.text }}
+            </div>
+        </mat-card>
+    </div>
+
+</div>

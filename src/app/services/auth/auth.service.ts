@@ -136,8 +136,11 @@ export class AuthService {
     return this.user
   }
 
+  // Function to logout the user. It clears the token from local storage and resets the user object
   logout(): void
   {
+    localStorage.removeItem('token') // Remove token from local storage
+    this.user = {} as User // Clear user object
     this.isLoggedIn = false
   }
 

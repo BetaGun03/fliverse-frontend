@@ -5,10 +5,13 @@ import { MatIcon } from '@angular/material/icon';
 import { CommonModule, Location } from '@angular/common';
 import { ContentService } from '../../services/content/content.service';
 import { ContentType } from '../../enums/content-type';
+import { ContentskeletonComponent } from '../skeletons/contentskeleton/contentskeleton.component';
+import { CommentsComponent } from '../comments/comments.component';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-content',
-  imports: [MatIcon, CommonModule],
+  imports: [MatIcon, CommonModule, ContentskeletonComponent, CommentsComponent],
   templateUrl: './content.component.html',
   styleUrl: './content.component.css'
 })
@@ -19,9 +22,8 @@ export class ContentComponent {
   public content!: Content
 
   //AÑADIR QUE EL USUARIO PUNTUE EL CONTENIDO
-  //AÑADIR COMENTARIOS
 
-  constructor(private router: Router, private location: Location, private contentService: ContentService, private route: ActivatedRoute) 
+  constructor(private router: Router, private location: Location, private contentService: ContentService, private route: ActivatedRoute, public auth: AuthService) 
   { 
     this.id = this.route.snapshot.paramMap.get('id') as string || ''
     const navigation = this.router.getCurrentNavigation()

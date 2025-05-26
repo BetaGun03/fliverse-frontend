@@ -24,6 +24,11 @@ export class HeaderComponent {
 
   constructor(private router: Router, public auth: AuthService) {}
 
+  logout()
+  {
+    this.auth.logout()
+  }
+
   onSearch() 
   {
     const query = this.searchTerm.trim()
