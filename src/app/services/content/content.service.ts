@@ -188,9 +188,9 @@ export class ContentService {
   }
 
   // Get content rating by ID from the API. It returns a Promise of a number
-  async getContentAverageRatingById(id: string): Promise<number>
+  async getContentAverageRatingById(contentId: string): Promise<number>
   {
-    const url = `https://api.fliverse.es/ratings/average/${id}`
+    const url = `https://api.fliverse.es/ratings/average/${contentId}`
 
     // Get the rating from the API
     try {
@@ -207,7 +207,87 @@ export class ContentService {
       console.error('Error fetching content rating:', error)
       return 0
     }
-    
+  }
+
+  // Add a rating to content. It takes contentId, rating and token as parameters. It returns a Promise of a number (the rating added)
+  async addRatingToContent(contentId: string, rating: number, token: string): Promise<number>
+  {
+    const url = "https://api.fliverse.es/ratings"
+
+    const data = {
+      content_id: contentId,
+      rating: rating
+    }
+
+    try {
+      const response = await axios.post(url, data, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      return response.data.rating || 0
+    } catch (error:any) {
+      if (error.response) 
+      {
+        if (error.response.status === 400) 
+        {
+          console.error('Invalid input or user has already rated:', error.response.data?.error)
+          throw new Error('Invalid input or you have already rated this content.')
+        }
+        if (error.response.status === 404) 
+        {
+          console.error('Content not found:', error.response.data?.error)
+          throw new Error('Content not found.')
+        }
+        if (error.response.status === 500) 
+        {
+          console.error('Internal server error:', error.response.data?.error)
+          throw new Error('Internal server error. Please try again later.')
+        }
+        console.error('Unknown error when adding rating:', error.response.data?.error)
+        throw new Error('Unknown error when adding rating.')
+      } 
+      else 
+      {
+        console.error('Network or unexpected error:', error)
+        throw new Error('Network or unexpected error.')
+      }
+    }
+  }
+
+  // Get user rating for content. It takes contentId and token as parameters. It returns a Promise of a number (the user's rating)
+  async getUserRatingForContent(contentId: string, token: string): Promise<number>
+  {
+    const url = `https://api.fliverse.es/ratings/${contentId}`
+
+    try {
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+
+      if (response.status === 200 && response.data && typeof response.data.rating === 'number') 
+      {
+        return response.data.rating
+      }
+
+      // If the backend returns the full object, try to extract the rating field
+      if (response.status === 200 && response.data && response.data.rating !== undefined) 
+      {
+        return response.data.rating
+      }
+
+      return 0
+    } catch (error: any) {
+      if (error.response && error.response.status === 404) // If the user has not rated the content, return 0
+      {
+        return 0
+      }
+      console.error('Error fetching user rating:', error)
+      return 0
+    }
+
   }
 
 }

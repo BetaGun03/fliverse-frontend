@@ -37,6 +37,12 @@ export class AuthService {
     }
   }
 
+  // Function to get the user token
+  public getToken(): string | undefined
+  {
+    return this.user?.token
+  }
+
   // Function to login the user using the API endpoint. It returns a Promise of the token
   async login(username: string, password: string): Promise<string>
   {

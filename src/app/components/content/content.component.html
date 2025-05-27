@@ -1,5 +1,5 @@
 <!-- Main Container: Layout with gradient background and responsive flex direction -->
- <app-contentskeleton *ngIf="isLoading"></app-contentskeleton>
+<app-contentskeleton *ngIf="isLoading"></app-contentskeleton>
 <div *ngIf="!isLoading" class="min-h-screen h-auto w-full bg-gradient-to-br from-red-50 via-white to-red-100 flex flex-col md:flex-row">
 
     <!-- Poster Section: Displays the content poster image -->
@@ -8,7 +8,7 @@
     </div>
 
     <!-- Content Info Section: Contains all textual and interactive information -->
-    <div class="w-full md:w-2/3 flex flex-col justify-center p-8">
+    <div class="w-full md:w-2/3 flex flex-col p-8">
         <div>
             <!-- Title -->
             <h1 class="text-5xl font-extrabold text-red-700 mb-4">{{ content.title }}</h1>
@@ -71,12 +71,13 @@
         </div>
 
         <!-- Action Buttons: Add to List and Back -->
-        <div class="mt-10 flex flex-col sm:flex-row gap-4">
+        <div class="mt-2 flex flex-col sm:flex-row gap-4">
             <!-- Add to List Button -->
             <button (click)="addToList()" mat-raised-button color="primary" class="!bg-red-600 !hover:bg-red-700 !text-white font-bold px-8 py-3 rounded-lg shadow-lg text-lg flex items-center justify-center cursor-pointer">
                 <mat-icon class="mr-2">playlist_add</mat-icon>
                 Add to List
             </button>
+            
             <!-- Back Button -->
             <button (click)="goBack()" mat-stroked-button color="primary" class="font-bold px-8 py-3 rounded-lg border-2 border-red-600 text-red-700 hover:!bg-red-50 text-lg flex items-center justify-center cursor-pointer">
                 <mat-icon class="mr-2">arrow_back</mat-icon>
@@ -84,7 +85,19 @@
             </button>
         </div>
 
-        <!-- Visual separator before Google login -->
+        <!-- User's rating selector -->
+        <div *ngIf="auth.isAuthenticated()" class="flex flex-col sm:flex-row items-center gap-4 mt-8 p-4 bg-white/80 rounded-xl shadow border border-gray-200 w-full sm:w-fit">
+    <span class="font-semibold text-gray-700 text-lg mr-2">Rate this content:</span>
+    <select id="rating" [(ngModel)]="userRating" class="border-2 border-red-200 rounded-lg px-4 py-2 text-lg focus:outline-none focus:border-red-400 transition">
+        <option *ngFor="let r of ratingOptions" [value]="r">{{ r }}</option>
+    </select>
+    <button (click)="submitRating()" mat-raised-button color="accent" class="!bg-yellow-400 !text-gray-900 cursor-pointer font-bold px-6 py-2 rounded-lg shadow flex items-center justify-center ml-0 sm:mt-0 hover:!bg-yellow-500 w-full sm:w-auto" >
+        <mat-icon class="mr-1">star</mat-icon>
+        Rate
+    </button>
+</div>
+
+        <!-- Visual separator -->
         <div *ngIf="auth.isAuthenticated()" class="!flex !items-center !mt-12">
             <hr class="!flex-grow !border-t !border-gray-300">
         </div>
