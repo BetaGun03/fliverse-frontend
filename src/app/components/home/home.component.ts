@@ -8,6 +8,7 @@ import { ContentService } from '../../services/content/content.service';
 import { Router } from '@angular/router';
 import { CardComponent } from '../skeletons/card/card.component';
 import { CarrouselComponent } from '../skeletons/carrousel/carrousel.component';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-home',
@@ -25,7 +26,7 @@ export class HomeComponent {
   contents: Content[] = []
   latestContents: Content[] = []
 
-  constructor(public contentService: ContentService, private router: Router){}
+  constructor(public contentService: ContentService, private router: Router, public auth: AuthService){}
 
   async ngOnInit(): Promise<void> 
   {

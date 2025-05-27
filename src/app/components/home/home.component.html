@@ -144,3 +144,14 @@
     </ng-template>
   </div>
 </div>
+
+<!-- Floating Action Button (FAB) -->
+<button
+  *ngIf="auth.isAuthenticated()"
+  mat-fab
+  color="primary"
+  class="!rounded-2xl !fixed !bottom-8 !right-8 !z-50 !text-white !bg-red-500 hover:!bg-red-600 !transition-transform hover:!scale-105 !w-20 !h-20 !shadow-2xl !border-4 !border-white flex items-center justify-center"
+  aria-label="Add content"
+>
+  <mat-icon class="text-5xl leading-none scale-150">add_circle</mat-icon>
+</button>
