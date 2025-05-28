@@ -40,7 +40,7 @@ export class CommentService {
 
       return comment
     } catch (e: any) {
-      console.error('Error creando el comentario:', e)
+      console.error('Error adding comment:', e)
       throw e
     }
   }
@@ -72,7 +72,6 @@ export class CommentService {
       return comments
     }
     catch(e){
-      console.error("Error fetching comments:" + e)
       return []
     }
   }

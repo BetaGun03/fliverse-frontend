@@ -86,11 +86,41 @@
 
         <!-- Action Buttons: Add to List and Back -->
         <div class="mt-2 flex flex-col sm:flex-row gap-4">
+
             <!-- Add to List Button -->
-            <button (click)="addToList()" mat-raised-button color="primary" class="!bg-red-600 !hover:bg-red-700 !text-white font-bold px-8 py-3 rounded-lg shadow-lg text-lg flex items-center justify-center cursor-pointer">
-                <mat-icon class="mr-2">playlist_add</mat-icon>
-                Add to List
-            </button>
+            <div class="relative w-full sm:w-auto">
+                <button (click)="toggleListDropdown()" mat-raised-button color="primary"
+                    class="w-full sm:w-auto !bg-red-600 hover:!bg-red-700 !hover:bg-red-700 !text-white font-bold px-8 py-3 rounded-lg shadow-lg text-lg flex items-center justify-center cursor-pointer"
+                    [disabled]="addingToList">
+                    <ng-container *ngIf="!addingToList; else loadingSvg">
+                        <mat-icon class="mr-2">playlist_add</mat-icon>
+                        Add to List
+                    </ng-container>
+                    <!-- Loading State -->
+                    <ng-template #loadingSvg>
+                        <svg stroke="white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="32" height="32">
+                            <g>
+                                <circle cx="12" cy="12" r="9.5" fill="none" stroke-width="3" stroke-linecap="round">
+                                    <animate attributeName="stroke-dasharray" dur="1.5s" calcMode="spline" values="0 150;42 150;42 150;42 150" keyTimes="0;0.475;0.95;1" keySplines="0.42,0,0.58,1;0.42,0,0.58,1;0.42,0,0.58,1" repeatCount="indefinite"/>
+                                    <animate attributeName="stroke-dashoffset" dur="1.5s" calcMode="spline" values="0;-16;-59;-59" keyTimes="0;0.475;0.95;1" keySplines="0.42,0,0.58,1;0.42,0,0.58,1;0.42,0,0.58,1" repeatCount="indefinite"/>
+                                </circle>
+                                <animateTransform attributeName="transform" type="rotate" dur="2s" values="0 12 12;360 12 12" repeatCount="indefinite"/>
+                            </g>
+                        </svg>
+                    </ng-template>
+                </button>
+                <!-- Dropdown -->
+                <div *ngIf="showListDropdown && !addingToList" class="absolute left-0 sm:left-auto z-10 mt-2 w-full sm:w-48 bg-white border border-gray-200 rounded-lg shadow-lg">
+                    <ng-container *ngIf="this.listService.getLists().length; else noLists">
+                        <button *ngFor="let list of this.listService.getLists()" (click)="addToUserList(list)" class="block w-full text-left px-4 py-2 hover:bg-red-50 hover:text-primary text-gray-800">
+                            {{ list.name }}
+                        </button>
+                    </ng-container>
+                    <ng-template #noLists>
+                        <div class="px-4 py-2 text-gray-500">No lists found</div>
+                    </ng-template>
+                </div>
+            </div>
             
             <!-- Back Button -->
             <button (click)="goBack()" mat-stroked-button color="primary" class="font-bold px-8 py-3 rounded-lg border-2 border-red-600 text-red-700 hover:!bg-red-50 text-lg flex items-center justify-center cursor-pointer">
@@ -105,9 +135,22 @@
             <select id="rating" [(ngModel)]="userRating" class="border-2 border-red-200 rounded-lg px-4 py-2 text-lg focus:outline-none focus:border-red-400 transition">
                 <option *ngFor="let r of ratingOptions" [value]="r">{{ r }}</option>
             </select>
-            <button (click)="submitRating()" mat-raised-button color="accent" class="!bg-yellow-400 !text-gray-900 cursor-pointer font-bold px-6 py-2 rounded-lg shadow flex items-center justify-center ml-0 sm:mt-0 hover:!bg-yellow-500 w-full sm:w-auto" >
-                <mat-icon class="mr-1">star</mat-icon>
-                Rate
+            <button (click)="submitRating()" mat-raised-button color="accent" class="!bg-yellow-400 !text-gray-900 cursor-pointer font-bold px-6 py-2 rounded-lg shadow flex items-center justify-center ml-0 sm:mt-0 hover:!bg-yellow-500 w-full sm:w-auto">
+                <ng-container *ngIf="!ratingContent; else loadingRateSvg">
+                    <mat-icon class="mr-1">star</mat-icon>
+                    Rate
+                </ng-container>
+                <ng-template #loadingRateSvg>
+                    <svg stroke="black" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="28" height="28">
+                        <g>
+                            <circle cx="12" cy="12" r="9.5" fill="none" stroke-width="3" stroke-linecap="round">
+                                <animate attributeName="stroke-dasharray" dur="1.5s" calcMode="spline" values="0 150;42 150;42 150;42 150" keyTimes="0;0.475;0.95;1" keySplines="0.42,0,0.58,1;0.42,0,0.58,1;0.42,0,0.58,1" repeatCount="indefinite"/>
+                                <animate attributeName="stroke-dashoffset" dur="1.5s" calcMode="spline" values="0;-16;-59;-59" keyTimes="0;0.475;0.95;1" keySplines="0.42,0,0.58,1;0.42,0,0.58,1;0.42,0,0.58,1" repeatCount="indefinite"/>
+                            </circle>
+                            <animateTransform attributeName="transform" type="rotate" dur="2s" values="0 12 12;360 12 12" repeatCount="indefinite"/>
+                        </g>
+                    </svg>
+                </ng-template>
             </button>
         </div>
 
@@ -116,6 +159,7 @@
             <hr class="!flex-grow !border-t !border-gray-300">
         </div>
 
+        <!-- Comments Section -->
         <app-comments *ngIf="auth.isAuthenticated()"></app-comments>
 
     </div>

@@ -5,6 +5,7 @@ import { FooterComponent } from './components/footer/footer.component';
 import { filter } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
 import { AuthService } from './services/auth/auth.service';
+import { ListService } from './services/list/list.service';
 
 @Component({
     selector: 'app-root',
@@ -17,7 +18,7 @@ export class AppComponent {
   title = 'Fliverse'
   showHeader = true
 
-  constructor(private router: Router, public auth: AuthService)
+  constructor(private router: Router, public auth: AuthService, private listService: ListService)
   {
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
@@ -34,6 +35,23 @@ export class AppComponent {
     {
       this.auth.setToken(token)
       this.auth.changeLoginStatus(true)
+
+      // Fetch user lists if the user is authenticated
+      this.listService.getUserLists(token)
+        .then(lists => {
+          if (lists.length === 0) 
+          {
+            this.listService.setLists([])
+            console.log('No lists found for the user.')
+          }
+          else
+          {
+            this.listService.setLists(lists)
+          } 
+        })
+        .catch(err => {
+          console.error('Error fetching user lists:', err)
+        })
     }
   }
 

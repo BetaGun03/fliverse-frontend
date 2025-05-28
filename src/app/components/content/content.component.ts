@@ -9,6 +9,8 @@ import { ContentskeletonComponent } from '../skeletons/contentskeleton/contentsk
 import { CommentsComponent } from '../comments/comments.component';
 import { AuthService } from '../../services/auth/auth.service';
 import { FormsModule } from '@angular/forms';
+import { ListService } from '../../services/list/list.service';
+import { List } from '../../interfaces/list';
 
 @Component({
   selector: 'app-content',
@@ -24,11 +26,14 @@ export class ContentComponent {
   userRating: number = 0 // Variable to store the user's rating
   hasUserRated: boolean = false // Flag to check if the user has rated the content
   userWatchedStatus: string = 'To watch' // Variable to store the user's watch status
-  ratingOptions: number[] = Array.from({ length: 11 }, (_, i) => i) // Array of rating options from 0 to 10
+  ratingOptions: number[] = Array.from({ length: 11 }, (_, i) => 10 - i) // Array of rating options from 0 to 10
+  showListDropdown = false // Flag to control the visibility of the list dropdown
+  addingToList: boolean = false // Flag to control the adding to list state
+  ratingContent: boolean = false // Flag to control the rating content state
 
   //AÑADIR A LISTAS
 
-  constructor(private router: Router, private location: Location, private contentService: ContentService, private route: ActivatedRoute, public auth: AuthService) 
+  constructor(private router: Router, private location: Location, private contentService: ContentService, private route: ActivatedRoute, public auth: AuthService, public listService: ListService) 
   { 
     this.id = this.route.snapshot.paramMap.get('id') as string || ''
     const navigation = this.router.getCurrentNavigation()
@@ -99,9 +104,32 @@ export class ContentComponent {
     }
   }
 
+  toggleListDropdown() 
+  {
+    this.showListDropdown = !this.showListDropdown
+  }
+
+  async addToUserList(list: List) 
+  {
+    this.showListDropdown = false
+    this.addingToList = true
+    this.listService.addContentToList(this.auth.getToken() || "", list.id || 0, Number(this.id))
+      .then(success => {
+        if (success) 
+        {
+          this.addingToList = false
+        }
+      })
+      .catch(err => {
+        console.error('Error adding content to list:', err)
+        alert('Error adding content to list')
+      })
+  }
+
   // Function to submit the user's rating to the backend using ContentService
   async submitRating() 
   {
+    this.ratingContent = true
     if (!this.auth.isAuthenticated())
     { 
       return
@@ -113,17 +141,16 @@ export class ContentComponent {
       if(this.hasUserRated)
       {
         await this.contentService.changeRatingForContent(String(this.content.id), this.userRating, token)
-        alert('Your rating has been updated!')
       }
       else
       {
         await this.contentService.addRatingToContent(String(this.content.id), this.userRating, token)
-        alert('Your rating has been submitted!')
       }
 
       // Update the content's average rating after submitting the new rating
       this.content.average_rating = await this.contentService.getContentAverageRatingById(String(this.content.id))
       this.hasUserRated = true
+      this.ratingContent = false
     } catch (err: any) {
       alert(err.message || 'Error submitting rating')
     }
@@ -203,11 +230,6 @@ export class ContentComponent {
   goBack() 
   {
     this.location.back()
-  }
-
-  addToList() 
-  {
-    alert('Added to your list!')
   }
 
 }
