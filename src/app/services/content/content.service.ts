@@ -255,6 +255,46 @@ export class ContentService {
     }
   }
 
+  // Change rating for content. It takes contentId, rating and token as parameters. It returns a Promise of a number (the updated rating)
+  async changeRatingForContent(contentId: string, rating: number, token: string): Promise<number>
+  {
+    const url = `https://api.fliverse.es/ratings/${contentId}`
+
+    const data = { 
+      rating 
+    }
+
+    try {
+      const response = await axios.patch(url, data, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+
+      // The backend responds with the updated rating object
+      if (response.status === 200 && response.data && response.data.rating !== undefined) 
+      {
+        return response.data.rating
+      }
+
+      // If the response is not as expected, throw a clear error
+      throw new Error('Unexpected response from server.')
+    } catch (error: any) {
+      if (error.response) {
+        if (error.response.status === 400) 
+        {
+          throw new Error(error.response.data?.error || 'Invalid input or user has not rated this content.')
+        }
+        if (error.response.status === 404) 
+        {
+          throw new Error(error.response.data?.error || 'Content not found or user has not rated this content.')
+        }
+      }
+      // If there is no response or it's another error
+      throw new Error('Error changing rating for content.')
+    }
+  }
+
   // Get user rating for content. It takes contentId and token as parameters. It returns a Promise of a number (the user's rating)
   async getUserRatingForContent(contentId: string, token: string): Promise<number>
   {
@@ -287,7 +327,75 @@ export class ContentService {
       console.error('Error fetching user rating:', error)
       return 0
     }
+  }
 
+  // Get user watched status for content. It takes contentId and token as parameters. It returns a Promise of a string (the user's watched status)
+  async getUserWatchedStatus(contentId: string, token: string): Promise<string>
+  {
+    const url = `https://api.fliverse.es/contents_user/${contentId}`
+
+    try {
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+
+      if (response.status === 200 && response.data && response.data.status) 
+      {
+        return response.data.status
+      }
+
+      return 'to_watch' // Default status if not found
+    } catch (error: any) {
+      if (error.response && error.response.status === 404) 
+      {
+        // If the user has not watched the content, return 'to_watch'
+        return 'to_watch'
+      }
+      console.error('Error fetching user watched status:', error)
+      return 'to_watch' // Default status in case of error
+    }
+  }
+
+  // Set user watched status for content. It takes contentId, status and token as parameters. It returns a Promise of a string (the updated status)
+  async setUserWatchedStatus(contentId: string, status: string, token: string): Promise<string>
+  {
+    if (status !== 'to_watch' && status !== 'watched') 
+    {
+      return "Invalid status"
+    }
+
+    const url = `https://api.fliverse.es/contents_user/${contentId}`
+
+    try {
+      const response = await axios.patch(url, { status }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+
+      if (response.status === 200 && response.data && response.data.status) 
+      {
+        return response.data.status
+      }
+
+      throw new Error('Unexpected response from server.')
+    } catch (error: any) {
+      if (error.response) 
+      {
+        if (error.response.status === 400) 
+        {
+          throw new Error(error.response.data?.error || 'Invalid request.')
+        }
+        if (error.response.status === 404) 
+        {
+          throw new Error('Association not found.')
+        }
+      }
+      console.error('Error setting user watched status:', error)
+      throw new Error('Error setting user watched status.')
+    }
   }
 
 }

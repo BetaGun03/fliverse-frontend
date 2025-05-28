@@ -22,11 +22,11 @@ export class ContentComponent {
   isLoading: boolean = false
   public content!: Content
   userRating: number = 0 // Variable to store the user's rating
+  hasUserRated: boolean = false // Flag to check if the user has rated the content
+  userWatchedStatus: string = 'To watch' // Variable to store the user's watch status
   ratingOptions: number[] = Array.from({ length: 11 }, (_, i) => i) // Array of rating options from 0 to 10
 
   //AÑADIR A LISTAS
-  //AÑADIR ESTADO DE VISIONADO
-  //AÑADIR SELECTOR ESTADO VISIONADO
 
   constructor(private router: Router, private location: Location, private contentService: ContentService, private route: ActivatedRoute, public auth: AuthService) 
   { 
@@ -89,7 +89,14 @@ export class ContentComponent {
           })
       }
     }
+  }
 
+  async ngOnInit()
+  {
+    if (this.auth.isAuthenticated()) 
+    {
+      await this.getUserWatchedStatus()
+    }
   }
 
   // Function to submit the user's rating to the backend using ContentService
@@ -103,11 +110,20 @@ export class ContentComponent {
     const token = this.auth.getToken?.() || ''
 
     try {
-      await this.contentService.addRatingToContent(String(this.content.id), this.userRating, token)
-      alert('Your rating has been submitted!')
+      if(this.hasUserRated)
+      {
+        await this.contentService.changeRatingForContent(String(this.content.id), this.userRating, token)
+        alert('Your rating has been updated!')
+      }
+      else
+      {
+        await this.contentService.addRatingToContent(String(this.content.id), this.userRating, token)
+        alert('Your rating has been submitted!')
+      }
 
       // Update the content's average rating after submitting the new rating
       this.content.average_rating = await this.contentService.getContentAverageRatingById(String(this.content.id))
+      this.hasUserRated = true
     } catch (err: any) {
       alert(err.message || 'Error submitting rating')
     }
@@ -126,9 +142,61 @@ export class ContentComponent {
     try {
       const userRating = await this.contentService.getUserRatingForContent(String(this.content.id), token)
       this.userRating = userRating || 0 // Default to 0 if no rating found
+      this.hasUserRated = userRating !== 0 // Check if the user has rated the content
     } catch (err: any) {
       console.error('Error fetching user rating:', err)
       alert(err.message || 'Error fetching your rating')
+    }
+  }
+
+  // Function to fetch the user's current watch status for the content
+  async getUserWatchedStatus()
+  {
+    if (!this.auth.isAuthenticated())
+    { 
+      return
+    }
+
+    const token = this.auth.getToken?.() || ''
+
+    try {
+      const watchStatus = await this.contentService.getUserWatchedStatus(String(this.content.id), token)
+      if(watchStatus === 'to_watch')
+      {
+        this.userWatchedStatus = 'To watch'
+      }
+      else if(watchStatus === 'watched')
+      {
+        this.userWatchedStatus = 'Watched'
+      }
+      else
+      {
+        this.userWatchedStatus = 'To watch'
+      }
+
+    } catch (err: any) {
+      console.error('Error fetching user watch status:', err)
+      alert(err.message || 'Error fetching your watch status')
+    }
+  }
+
+   async toggleWatchedStatus() 
+   {
+    if (!this.auth.isAuthenticated()) return
+
+    const token = this.auth.getToken?.() || ''
+    
+    // Determine the new status based on the current one
+    const newStatus = this.userWatchedStatus === 'Watched' ? 'to_watch' : 'watched'
+
+    try {
+      // Call the service to update the status
+      await this.contentService.setUserWatchedStatus(String(this.content.id), newStatus, token)
+      
+      // Update the local status
+      this.userWatchedStatus = newStatus === 'watched' ? 'Watched' : 'To watch'
+    } catch (err: any) {
+      alert(err.message || 'Error updating watched status')
     }
   }
 

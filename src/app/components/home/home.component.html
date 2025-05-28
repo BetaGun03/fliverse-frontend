@@ -2,7 +2,7 @@
   Carrousel Section
 ========================= -->
 <mat-card class="!p-8 !mt-2 !mb-6 !bg-white/70 !shadow-md">
-  <div class="relative overflow-hidden w-full max-w-75 mx-auto">
+  <div class="relative overflow-hidden w-full max-w-75 mx-auto !rounded-lg">
     <!-- Carrousel: Show when not loading -->
     <ng-container *ngIf="!isLoading; else skeletonCarrousel">
       <div class="flex transition-transform hover:scale-105 duration-500" [style.transform]="'translateX(-' + currentSlide * 100 + '%)'">
@@ -13,7 +13,7 @@
           [id]="'sliderContent' + content.id"
           [src]="content.poster"
           alt="Slide"
-          class="cursor-pointer w-full h-auto object-contain flex-shrink-0 "
+          class="cursor-pointer w-full h-auto object-contain flex-shrink-0 !rounded-lg"
         />
       </div>
       <!-- Carrousel Navigation Buttons -->
@@ -24,7 +24,7 @@
         <mat-icon>chevron_right</mat-icon>
       </button>
       <!-- Carrousel Pagination Dots -->
-      <div class="flex justify-center !mt-4 sm:!mt-4 space-x-2 sm:space-x-4">
+      <div class="flex justify-center !mt-4 sm:!mt-4 !mb-2 space-x-2 sm:space-x-4">
         <button
           *ngFor="let _ of slides; let i = index"
           mat-button
