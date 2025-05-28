@@ -11,6 +11,7 @@ import { AuthService } from '../../services/auth/auth.service';
 import { FormsModule } from '@angular/forms';
 import { ListService } from '../../services/list/list.service';
 import { List } from '../../interfaces/list';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-content',
@@ -33,7 +34,7 @@ export class ContentComponent {
 
   //AÑADIR A LISTAS
 
-  constructor(private router: Router, private location: Location, private contentService: ContentService, private route: ActivatedRoute, public auth: AuthService, public listService: ListService) 
+  constructor(private router: Router, private location: Location, private contentService: ContentService, private route: ActivatedRoute, public auth: AuthService, public listService: ListService, public snackBar: MatSnackBar) 
   { 
     this.id = this.route.snapshot.paramMap.get('id') as string || ''
     const navigation = this.router.getCurrentNavigation()
@@ -118,6 +119,10 @@ export class ContentComponent {
         if (success) 
         {
           this.addingToList = false
+          this.snackBar.open('Added to list', 'Close', {
+            duration: 3000,
+            verticalPosition: 'bottom'
+          })
         }
       })
       .catch(err => {
@@ -151,6 +156,10 @@ export class ContentComponent {
       this.content.average_rating = await this.contentService.getContentAverageRatingById(String(this.content.id))
       this.hasUserRated = true
       this.ratingContent = false
+      this.snackBar.open('Content rated', 'Close', {
+        duration: 3000,
+        verticalPosition: 'bottom',
+      })
     } catch (err: any) {
       alert(err.message || 'Error submitting rating')
     }
@@ -207,8 +216,9 @@ export class ContentComponent {
     }
   }
 
-   async toggleWatchedStatus() 
-   {
+  // Function to toggle the user's watched status for the content
+  async toggleWatchedStatus() 
+  {
     if (!this.auth.isAuthenticated()) return
 
     const token = this.auth.getToken?.() || ''
@@ -222,8 +232,25 @@ export class ContentComponent {
       
       // Update the local status
       this.userWatchedStatus = newStatus === 'watched' ? 'Watched' : 'To watch'
-    } catch (err: any) {
-      alert(err.message || 'Error updating watched status')
+      } catch (err: any) {
+        // If the association does not exist, try to create it and then patch again
+        if (err.message === 'Association not found.') 
+        {
+          try {
+            // Call the service to create the association
+            await this.contentService.createUserContentAssociation(token, this.id)
+
+            // Try to set the watched status again
+            await this.contentService.setUserWatchedStatus(this.id, newStatus, token)
+            this.userWatchedStatus = newStatus === 'watched' ? 'Watched' : 'To watch'
+          } catch (createErr: any) {
+            alert(createErr.message || 'Error creating association')
+          }
+        } 
+        else 
+        {
+          alert(err.message || 'Error updating watched status')
+        }
     }
   }
 

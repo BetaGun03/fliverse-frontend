@@ -398,4 +398,37 @@ export class ContentService {
     }
   }
 
+  // Add user watched status for content.
+  async createUserContentAssociation(token: string, contentId: string): Promise<string>
+  {
+    const url = `https://api.fliverse.es/contents_user`
+
+    try {
+      const response = await axios.post(url, { contentId }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+
+      if (response.status === 201 && response.data) 
+      {
+        return response.data.status || 'to_watch' // Default to 'to_watch' if status is not provided
+      }
+
+      throw new Error('Unexpected response from server.')
+    } catch (error: any) {
+      if (error.response) 
+      {
+        if (error.response.status === 400) 
+        {
+          throw new Error(error.response.data?.error || 'Invalid request.')
+        }
+        if (error.response.status === 404) 
+        {
+          throw new Error(error.response.data?.error || 'Content not found.')
+        }
+      }
+      throw new Error('Error creating user-content association.')
+    }
+  }
 }
