@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { User } from '../../interfaces/user';
 import axios from 'axios';
+import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +12,25 @@ export class AuthService {
   private user!: User
   private isLoggedIn: boolean = false
 
-  constructor() { }
+  constructor(private router: Router, public snackBar: MatSnackBar) 
+  {
+    // Global axios interceptor to manage authentication errors. If the token is expired or invalid, it will log out the user and redirect to the login page.
+    axios.interceptors.response.use(
+      response => response,
+      error => {
+        if(error.response && error.response.status === 401 && ( error.response.data?.message === 'Token expired' || error.response.data?.message === 'Invalid token' || error.response.data?.message === 'Session terminated. Please log in again.' || error.response.data?.message === 'Authorization header missing' || error.response.data?.message === 'Invalid authorization format' || error.response.data?.message === 'Unauthorized' ))
+        {
+          console.log('Session expired or invalid token. Logging out...')
+          this.snackBar.open('Session expired. Please log in again.', 'Close', {
+            duration: 5000,
+          })
+          this.logout()
+          this.router.navigate(['/login'])
+        }
+        return Promise.reject(error)
+      }
+    )
+  }
 
   // Function to change the login status of the user
   public changeLoginStatus(status: boolean): void

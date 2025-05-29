@@ -1,0 +1,108 @@
+<div class="bg-gradient-to-br from-red-50 via-white to-red-100 min-h-screen w-full">
+    <section class="flex flex-col items-center justify-center py-12 px-4">
+        
+            <!-- Logo and Title -->
+        <div class="flex flex-col items-center mb-10">
+            <h1 class="text-4xl font-extrabold text-red-700 tracking-tight">Your Lists</h1>
+            <div class="w-24 h-1 bg-red-200 rounded mt-2"></div>
+        </div>
+
+        <!-- Button to create new list -->
+        <div class="mb-6 flex justify-end w-full max-w-2xl">
+            <button
+                class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg shadow transition cursor-pointer"
+                (click)="showNewListForm = !showNewListForm"
+            >
+                <mat-icon class="align-middle mr-1">add</mat-icon>
+                New list
+            </button>
+        </div>
+
+        <!-- Form to create new list -->
+        <div *ngIf="showNewListForm" class="w-full max-w-2xl mb-6 bg-white border-2 border-red-100 rounded-xl shadow-md p-6">
+            <form [formGroup]="newListForm" (ngSubmit)="createList()">
+                <div class="mb-4">
+                    <label class="block text-red-700 font-bold mb-2">List name</label>
+                    <input
+                        type="text"
+                        class="w-full border rounded px-3 py-2"
+                        formControlName="name"
+                        required
+                    />
+                </div>
+                <div class="mb-4">
+                    <label class="block text-red-700 font-bold mb-2">Description</label>
+                    <textarea
+                        class="w-full border rounded px-3 py-2"
+                        formControlName="description"
+                        required
+                    ></textarea>
+                </div>
+                <div class="flex gap-2 items-center">
+                    <button
+                        type="submit"
+                        class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded cursor-pointer"
+                        [disabled]="newListForm.invalid"
+                    >
+                        Create
+                    </button>
+                    <button
+                        type="button"
+                        class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded cursor-pointer"
+                        (click)="showNewListForm = false"
+                    >
+                        Cancel
+                    </button>
+                    <svg stroke="red" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="28" height="28" class="block" *ngIf="creatingList">
+                        <g>
+                            <circle cx="12" cy="12" r="9.5" fill="none" stroke-width="3" stroke-linecap="round">
+                                <animate attributeName="stroke-dasharray" dur="1.5s" calcMode="spline" values="0 150;42 150;42 150;42 150" keyTimes="0;0.475;0.95;1" keySplines="0.42,0,0.58,1;0.42,0,0.58,1;0.42,0,0.58,1" repeatCount="indefinite"/>
+                                <animate attributeName="stroke-dashoffset" dur="1.5s" calcMode="spline" values="0;-16;-59;-59" keyTimes="0;0.475;0.95;1" keySplines="0.42,0,0.58,1;0.42,0,0.58,1;0.42,0,0.58,1" repeatCount="indefinite"/>
+                            </circle>
+                            <animateTransform attributeName="transform" type="rotate" dur="2s" values="0 12 12;360 12 12" repeatCount="indefinite"/>
+                        </g>
+                    </svg>
+                </div>
+            </form>
+        </div>
+
+        <div class="w-full max-w-2xl">
+            <!-- Loading State -->
+            <div *ngIf="loading" class="flex justify-center items-center py-12">
+                <mat-spinner diameter="48"></mat-spinner>
+            </div>
+
+            <!-- No Lists Message -->
+            <div *ngIf="!loading && listService.getLists().length === 0" class="text-gray-500 text-center py-12 text-lg font-semibold bg-white rounded-xl shadow border-2 border-red-100">
+                You don't have any lists yet.<br>
+                <span class="text-sm text-gray-400">Create your first list to start organizing your content!</span>
+            </div>
+
+            <!-- Lists -->
+            <div *ngIf="!loading && listService.getLists().length > 0" class="flex flex-col gap-6">
+                <div *ngFor="let list of listService.getLists()" (click)="goToList(list)" class="bg-white border-2 border-red-100 rounded-xl shadow-md p-6 hover:shadow-lg hover:scale-105 transition-transform cursor-pointer">
+                    <div class="flex items-center justify-between mb-2">
+                        <h2 class="text-2xl font-bold text-red-700 flex items-center gap-2">
+                            <mat-icon class="!text-xl !text-red-400">list</mat-icon>
+                            {{ list.name }}
+                        </h2>
+                    </div>
+                    <p class="text-gray-700 text-base" *ngIf="list.description">{{ list.description }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- =======================
+                Back Button Section
+            ======================== -->
+        <div class="flex justify-center md:justify-end mt-12 w-full max-w-2xl">
+            <button mat-stroked-button color="primary"
+                    class="font-bold px-8 py-3 rounded-lg border-2 border-red-600 text-red-700 hover:!bg-red-100 text-lg flex items-center justify-center cursor-pointer"
+                    (click)="router.navigate(['/'])">
+                <mat-icon class="mr-2">arrow_back</mat-icon>
+                Back to home
+            </button>
+        </div>
+
+    </section>
+</div>

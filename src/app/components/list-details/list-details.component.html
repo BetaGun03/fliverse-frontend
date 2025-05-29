@@ -1,0 +1,101 @@
+<!-- Main background and layout wrapper -->
+<div class="bg-gradient-to-br from-red-50 via-white to-red-100 min-h-screen w-full">
+    <section class="flex flex-col items-center justify-center py-12 px-4">
+
+        <!-- =======================
+             Header Section
+        ======================== -->
+        <div class="flex flex-col items-center mb-10">
+            <h1 class="text-4xl font-extrabold text-red-700 tracking-tight flex items-center gap-2">
+                <mat-icon class="!text-3xl !text-red-400">list</mat-icon>
+                {{ list.name }}
+            </h1>
+            <div class="w-24 h-1 bg-red-200 rounded mt-2"></div>
+        </div>
+
+        <div class="w-full max-w-2xl">
+
+            <!-- =======================
+                 Description Section
+            ======================== -->
+            <div class="bg-white border-2 border-red-100 rounded-xl shadow-md p-8 mb-8">
+                <span class="text-gray-600 font-semibold">Description:</span>
+                <p class="text-gray-700 text-base mt-1" *ngIf="list.description; else noDesc">
+                    {{ list.description }}
+                </p>
+                <!-- Show if no description -->
+                <ng-template #noDesc>
+                    <span class="italic text-gray-400">No description provided.</span>
+                </ng-template>
+            </div>
+
+            <!-- =======================
+                 Contents Section
+            ======================== -->
+            <div class="bg-white border-2 border-red-100 rounded-xl shadow-md p-8">
+
+                <!-- Section Title -->
+                <h2 class="text-2xl font-bold text-red-600 mb-4 flex items-center">
+                    <mat-icon class="mr-2">movie</mat-icon>
+                    Contents
+                </h2>
+
+                <!-- List of contents if available -->
+                <ng-container *ngIf="list.contents && list.contents.length > 0; else noContents">
+                    <div class="grid grid-cols-1 gap-4">
+                        <!-- Loop through each content item -->
+                        <div *ngFor="let content of list.contents"
+                             (click)="goToContentDetails(content)"
+                             class="flex items-center bg-red-50 rounded-lg p-3 shadow-sm border border-red-100 hover:shadow-md transition hover:scale-105 cursor-pointer">
+
+                            <!-- Poster image if available -->
+                            <img *ngIf="content.poster"
+                                 [src]="content.poster"
+                                 alt="{{ content.title }}"
+                                 class="w-16 h-24 object-cover rounded-lg mr-4 border border-red-200" />
+
+                            <!-- Content details -->
+                            <div class="flex-1">
+                                <div class="flex items-center">
+                                    <span class="text-lg font-semibold text-red-700">{{ content.title }}</span>
+                                    <!-- Content type badge -->
+                                    <span class="ml-2 text-xs bg-red-200 text-red-800 px-2 py-0.5 rounded"
+                                          *ngIf="content.type">{{ content.type | titlecase }}</span>
+                                    <!-- Release year -->
+                                    <span class="ml-2 text-xs text-gray-500"
+                                          *ngIf="content.release_date">({{ content.release_date | date:'yyyy' }})</span>
+                                </div>
+                                <!-- Genres if available -->
+                                <div class="text-sm text-gray-600 mt-1"
+                                     *ngIf="content.genre && content.genre.length > 0">
+                                    <mat-icon class="mr-1 text-base align-middle">category</mat-icon>
+                                    {{ content.genre.join(', ') }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+
+                <!-- Show if no contents in the list -->
+                <ng-template #noContents>
+                    <div class="text-gray-400 italic text-center py-6">
+                        <mat-icon class="mb-1">info</mat-icon>
+                        No contents in this list.
+                    </div>
+                </ng-template>
+            </div>
+
+            <!-- =======================
+                 Back Button Section
+            ======================== -->
+            <div class="flex justify-center md:justify-end mt-8">
+                <button mat-stroked-button color="primary"
+                        class="font-bold px-8 py-3 rounded-lg border-2 border-red-600 text-red-700 hover:!bg-red-100 text-lg flex items-center justify-center cursor-pointer"
+                        (click)="router.navigate(['/lists'])">
+                    <mat-icon class="mr-2">arrow_back</mat-icon>
+                    Back to Lists
+                </button>
+            </div>
+        </div>
+    </section>
+</div>

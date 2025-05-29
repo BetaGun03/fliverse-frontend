@@ -46,11 +46,11 @@
       <mat-icon class="mr-1">category_search</mat-icon>
       Advanced search
     </button>
-    <button [disableRipple]="true" mat-button class="!border !border-gray-300 !rounded-lg text-gray-700 text-sm !shadow hover:!text-primary hover:!bg-red-50">
+    <button *ngIf="auth.isAuthenticated()" [disableRipple]="true" mat-button class="!border !border-gray-300 !rounded-lg text-gray-700 text-sm !shadow hover:!text-primary hover:!bg-red-50">
       <mat-icon class="mr-1">visibility</mat-icon>
       Watching
     </button>
-    <button [disableRipple]="true" mat-button class="!border !border-gray-300 !rounded-lg text-gray-700 text-sm !shadow hover:!text-primary hover:!bg-red-50">
+    <button *ngIf="auth.isAuthenticated()" [routerLink]="['/lists']" [disableRipple]="true" mat-button class="!border !border-gray-300 !rounded-lg text-gray-700 text-sm !shadow hover:!text-primary hover:!bg-red-50">
       <mat-icon class="mr-1 scale-125">list</mat-icon>
       Lists
     </button>
@@ -76,8 +76,8 @@
     <mat-menu #menu="matMenu">
       <button *ngIf="auth.isAuthenticated()" mat-menu-item class="text-gray-700 text-sm hover:!text-primary">Add content</button>
       <button mat-menu-item class="text-gray-700 text-sm hover:!text-primary">Advanced search</button>
-      <button mat-menu-item class="text-gray-700 text-sm hover:!text-primary">Watching</button>
-      <button mat-menu-item class="text-gray-700 text-sm hover:!text-primary">Lists</button>
+      <button *ngIf="auth.isAuthenticated()" mat-menu-item class="text-gray-700 text-sm hover:!text-primary">Watching</button>
+      <button *ngIf="auth.isAuthenticated()" [routerLink]="['/lists']" mat-menu-item class="text-gray-700 text-sm hover:!text-primary">Lists</button>
       <button *ngIf="auth.isAuthenticated()" mat-menu-item class="text-gray-700 text-sm hover:!text-primary">User</button>
       <button *ngIf="auth.isAuthenticated()" (click)="logout()" mat-menu-item class="text-gray-700 text-sm hover:!text-primary">Logout</button>
       <button *ngIf="!auth.isAuthenticated()" [routerLink]="['/login']" mat-menu-item class="text-gray-700 text-sm hover:!text-primary">Login</button>

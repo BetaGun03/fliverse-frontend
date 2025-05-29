@@ -1,4 +1,16 @@
 <!-- =========================
+  Page explanation
+========================= -->
+<mat-card class="!mb-2 !bg-gradient-to-r from-red-100 via-white to-red-50 !shadow-md !p-8 !flex !items-left">
+  <div>
+    <h1 class="text-4xl font-extrabold mb-2 text-red-700">Welcome to <span class="text-primary">Fliverse</span></h1>
+    <p class="text-lg text-gray-700">
+      Your personal universe to discover, search and explore information about <b>movies</b> and <b>series</b>.<br>
+      Add your own content, share your favorites, and connect with the movie-loving community. Start your journey now!
+    </p>
+  </div>
+</mat-card>
+<!-- =========================
   Carrousel Section
 ========================= -->
 <mat-card class="!p-8 !mt-2 !mb-6 !bg-white/70 !shadow-md">
@@ -7,14 +19,15 @@
     <ng-container *ngIf="!isLoading; else skeletonCarrousel">
       <div class="flex transition-transform hover:scale-105 duration-500" [style.transform]="'translateX(-' + currentSlide * 100 + '%)'">
         <!-- Carrousel Slides -->
-        <img
-          (click)="goToContent(content)"
-          *ngFor="let content of slides"
-          [id]="'sliderContent' + content.id"
-          [src]="content.poster"
-          alt="Slide"
-          class="cursor-pointer w-full h-auto object-contain flex-shrink-0 !rounded-lg"
-        />
+        <div *ngFor="let content of slides" class="w-full flex-shrink-0 aspect-[2/3] overflow-hidden flex items-center justify-center">
+          <img
+            (click)="goToContent(content)"
+            [id]="'sliderContent' + content.id"
+            [src]="content.poster"
+            alt="Slide"
+            class="!w-full !h-full !object-cover !rounded-md cursor-pointer"
+          />
+        </div>
       </div>
       <!-- Carrousel Navigation Buttons -->
       <button mat-icon-button (click)="prev()" class="!absolute !top-1/2 !left-2 !transform !-translate-y-1/2 !bg-white/70 hover:!bg-white !rounded-full !p-2 !z-10 !shadow-md">
@@ -49,7 +62,7 @@
   Most Recent Contents Section
 ========================================================= -->
 <div class="px-4 sm:px-8 pb-8">
-  <h1 class="text-5xl font-bold mt-10">Recent contents</h1>
+  <h1 class="text-5xl font-bold mt-10 text-primary">Recent contents</h1>
   <div
     class="grid gap-4 mt-6"
     [ngClass]="{
@@ -68,13 +81,15 @@
         class="!cursor-pointer !p-4 !shadow-md !bg-red-50 !border-2 !border-red-100 transition-transform hover:scale-105 hover:!shadow-lg hover:!border-red-300 hover:!border-4"
       >
         <!-- Content Poster -->
-        <img
-          (click)="goToContent(content)"
-          mat-card-image
-          [src]="content.poster"
-          alt="{{ content.title }}"
-          class="!w-full !h-full !object-cover !rounded-md"
-        />
+        <div class="w-full aspect-[2/3] overflow-hidden flex items-center justify-center">
+          <img
+            (click)="goToContent(content)"
+            mat-card-image
+            [src]="content.poster"
+            alt="{{ content.title }}"
+            class="!w-full !h-full !object-cover !rounded-md"
+          />
+        </div>
         <mat-card-content class="!px-1 !py-0">
           <!-- Content Title -->
           <h3 class="!text-2xl !font-semibold !text-primary">{{ content.title }}</h3>
@@ -99,7 +114,7 @@
   Random Contents Section
 ========================================================= -->
 <div class="px-4 sm:px-8 pb-8">
-  <h1 class="text-5xl font-bold mt-10">Random contents</h1>
+  <h1 class="text-5xl font-bold mt-10 text-primary">Random contents</h1>
   <div
     class="grid gap-4 mt-6"
     [ngClass]="{
@@ -118,13 +133,15 @@
         class="!cursor-pointer !p-4 !shadow-md !bg-red-50 !border-2 !border-red-100 transition-transform hover:scale-105 hover:!shadow-lg hover:!border-red-300 hover:!border-4"
       >
         <!-- Content Poster -->
-        <img
-          (click)="goToContent(content)"
-          mat-card-image
-          [src]="content.poster"
-          alt="{{ content.title }}"
-          class="!w-full !h-full !object-cover !rounded-md"
-        />
+        <div class="w-full aspect-[2/3] overflow-hidden flex items-center justify-center">
+          <img
+            (click)="goToContent(content)"
+            mat-card-image
+            [src]="content.poster"
+            alt="{{ content.title }}"
+            class="!w-full !h-full !object-cover !rounded-md"
+          />
+        </div>
         <mat-card-content class="!px-1 !py-0">
           <!-- Content Title -->
           <h3 class="!text-2xl !font-semibold !text-primary">{{ content.title }}</h3>

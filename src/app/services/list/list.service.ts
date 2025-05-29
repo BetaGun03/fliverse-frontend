@@ -43,9 +43,11 @@ export class ListService {
       const lists: List[] = response.data.map((item: any) => ({
         id: item.id,
         name: item.name,
+        contents: item.contents,
         description: item.description,
+        creation_date: item.creation_date ? new Date(item.creation_date) : undefined
       }))
-
+      
       this.setLists(lists)
       return lists
     }
@@ -77,8 +79,7 @@ export class ListService {
       let list: List = {
         id: response.data.id,
         name: response.data.name,
-        description: response.data.description,
-        creation_date: new Date(response.data.creation_date)
+        description: response.data.description
       }
 
       this.userLists.push(list)
