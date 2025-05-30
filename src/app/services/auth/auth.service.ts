@@ -3,6 +3,7 @@ import { User } from '../../interfaces/user';
 import axios from 'axios';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ListService } from '../list/list.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class AuthService {
   private user!: User
   private isLoggedIn: boolean = false
 
-  constructor(private router: Router, public snackBar: MatSnackBar) 
+  constructor(private router: Router, public snackBar: MatSnackBar, private listService: ListService) 
   {
     // Global axios interceptor to manage authentication errors. If the token is expired or invalid, it will log out the user and redirect to the login page.
     axios.interceptors.response.use(
@@ -30,6 +31,12 @@ export class AuthService {
         return Promise.reject(error)
       }
     )
+  }
+
+  // Function to get the current user object
+  public getUser(): User
+  {
+    return this.user || {} as User // Return an empty object if user is not defined
   }
 
   // Function to change the login status of the user
@@ -159,6 +166,28 @@ export class AuthService {
   {
     let url = "https://api.fliverse.es/users/me"
 
+    const response = await axios.get(url, {
+      headers: {
+        'Authorization': `Bearer ${this.getToken()}`
+      }
+    })
+
+    if (response.status === 200) 
+    {
+      this.user = {
+        username: response.data.username,
+        email: response.data.email,
+        name: response.data.name,
+        birthdate: response.data.birthdate ? new Date(response.data.birthdate) : undefined,
+        profilePic: response.data.profile_pic,
+        token: localStorage.getItem('token') || ''
+      }
+    } 
+    else 
+    {
+      throw new Error("Failed to fetch user information")
+    }
+
     return this.user
   }
 
@@ -168,6 +197,25 @@ export class AuthService {
     localStorage.removeItem('token') // Remove token from local storage
     this.user = {} as User // Clear user object
     this.isLoggedIn = false
+    this.listService.setLists([]) // Clear user lists
+  }
+
+  // Function to logout the user from all devices. It clears the token from local storage and resets the user object
+  //TERMINARLA
+  logoutAllDevices(): void
+  {
+    /*
+    localStorage.removeItem('token') // Remove token from local storage
+    this.user = {} as User // Clear user object
+    this.isLoggedIn = false
+    this.listService.setLists([]) // Clear user lists*/
+  }
+
+  // Function to edit user information. It returns a Promise of the updated User object
+  editUserInfo(user: User): Promise<User>
+  {
+    // Placeholder for editing user info functionality
+    return Promise.reject(new Error("editUserInfo not implemented yet"))
   }
 
   isAuthenticated(): boolean

@@ -53,6 +53,7 @@ export class ListsComponent {
       .then(() => {
         this.newListForm.reset()
         this.showNewListForm = false
+        this.snackBar.open("List created successfully", "Close", { duration: 3000 })
       })
       .catch((error: any) => {
         console.error("Error creating list:", error)

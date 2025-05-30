@@ -54,7 +54,7 @@
       <mat-icon class="mr-1 scale-125">list</mat-icon>
       Lists
     </button>
-    <button *ngIf="auth.isAuthenticated()" [disableRipple]="true" mat-button class="!border !border-gray-300 !rounded-lg text-gray-700 text-sm !shadow hover:!text-primary hover:!bg-red-50 flex items-center">
+    <button *ngIf="auth.isAuthenticated()" [routerLink]="['/user']" [disableRipple]="true" mat-button class="!border !border-gray-300 !rounded-lg text-gray-700 text-sm !shadow hover:!text-primary hover:!bg-red-50 flex items-center">
       <mat-icon class="mr-1">account_circle</mat-icon>
       User
     </button>
@@ -78,7 +78,7 @@
       <button mat-menu-item class="text-gray-700 text-sm hover:!text-primary">Advanced search</button>
       <button *ngIf="auth.isAuthenticated()" mat-menu-item class="text-gray-700 text-sm hover:!text-primary">Watching</button>
       <button *ngIf="auth.isAuthenticated()" [routerLink]="['/lists']" mat-menu-item class="text-gray-700 text-sm hover:!text-primary">Lists</button>
-      <button *ngIf="auth.isAuthenticated()" mat-menu-item class="text-gray-700 text-sm hover:!text-primary">User</button>
+      <button *ngIf="auth.isAuthenticated()" [routerLink]="['/user']" mat-menu-item class="text-gray-700 text-sm hover:!text-primary">User</button>
       <button *ngIf="auth.isAuthenticated()" (click)="logout()" mat-menu-item class="text-gray-700 text-sm hover:!text-primary">Logout</button>
       <button *ngIf="!auth.isAuthenticated()" [routerLink]="['/login']" mat-menu-item class="text-gray-700 text-sm hover:!text-primary">Login</button>
       <button *ngIf="!auth.isAuthenticated()" [routerLink]="['/register']" mat-menu-item class="text-gray-700 text-sm hover:!text-primary">Register</button>

@@ -12,5 +12,6 @@ export const routes: Routes = [
     { path: "login", loadComponent: () => import('./components/login/login.component').then(m => m.LoginComponent) },
     { path: "register", loadComponent: () => import('./components/register/register.component').then(m => m.RegisterComponent) },
     { path: "lists", loadComponent: () => import('./components/lists/lists.component').then(m => m.ListsComponent) },
-    { path: 'lists/:id', component: ListDetailsComponent }
+    { path: 'lists/:id', component: ListDetailsComponent },
+    { path: "user", loadComponent: () => import('./components/user-info/user-info.component').then(m => m.UserInfoComponent) },
 ];

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth/auth.service';
 import { User } from '../../interfaces/user';
 import { CommonModule } from '@angular/common';
+import { ListService } from '../../services/list/list.service';
 
 declare const google: any
 
@@ -16,7 +17,7 @@ export class GoogleloginComponent {
 
   isLoading: boolean = false
 
-  constructor(private router: Router, private auth: AuthService, private ngZone: NgZone) { }
+  constructor(private router: Router, private auth: AuthService, private ngZone: NgZone, private listService: ListService) { }
 
   ngOnInit()
   {
@@ -69,6 +70,24 @@ export class GoogleloginComponent {
         localStorage.setItem('token', data.bdtoken)
         this.auth.changeLoginStatus(true)
         this.auth.changeUser(user)
+
+        // Fetch user lists when the user logs in
+        this.listService.getUserLists(data.bdtoken)
+          .then(lists => {
+            if (lists.length === 0)
+            {
+              this.listService.setLists([])
+              console.log('No lists found for the user.')
+            }
+            else
+            {
+              this.listService.setLists(lists)
+            } 
+          })
+          .catch(err => {
+            console.error('Error fetching user lists:', err)
+          })
+          
         this.router.navigate(['/'])
       })
       .catch(async error => {

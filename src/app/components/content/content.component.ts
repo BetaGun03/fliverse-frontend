@@ -107,7 +107,18 @@ export class ContentComponent {
 
   toggleListDropdown() 
   {
-    this.showListDropdown = !this.showListDropdown
+    if(!this.auth.isAuthenticated())
+    {
+      this.snackBar.open('You must be logged in to add content to a list', 'Close', {
+        duration: 3000,
+        verticalPosition: 'bottom'
+      })
+      return
+    }
+    else
+    {
+      this.showListDropdown = !this.showListDropdown
+    }
   }
 
   async addToUserList(list: List) 

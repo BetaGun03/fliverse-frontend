@@ -1,0 +1,73 @@
+<section class="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-red-100 via-white to-red-200 px-4 py-8">
+  <div class="w-full max-w-2xl bg-white rounded-2xl shadow-xl border-2 border-red-200 p-8">
+    <div class="flex flex-col items-center mb-6">
+      <img
+        *ngIf="authService.getUser().profilePic; else defaultAvatar"
+        [src]="authService.getUser().profilePic"
+        alt="Profile picture"
+        class="w-28 h-28 rounded-full border-4 border-red-300 shadow mb-2 object-cover"
+      />
+      <ng-template #defaultAvatar>
+        <div class="w-28 h-28 rounded-full bg-red-100 flex items-center justify-center border-4 border-red-300 shadow mb-2">
+          <mat-icon class="text-5xl text-red-400">person</mat-icon>
+        </div>
+      </ng-template>
+      <h1 class="text-3xl font-bold text-red-700">{{ authService.getUser().username }}</h1>
+      <p class="text-gray-500 text-base" *ngIf="authService.getUser().email">{{ authService.getUser().email }}</p>
+    </div>
+
+    <!-- Card for personal data -->
+    <div class="w-full bg-red-50 rounded-xl border border-red-200 shadow p-6 space-y-4">
+      <div *ngIf="authService.getUser().name">
+        <span class="font-semibold text-gray-700">Name: </span>
+        <span class="text-gray-900">{{ authService.getUser().name }}</span>
+      </div>
+      <div>
+        <span class="font-semibold text-gray-700">Username: </span>
+        <span class="text-gray-900">{{ authService.getUser().username }}</span>
+      </div>
+      <div *ngIf="authService.getUser().email">
+        <span class="font-semibold text-gray-700">Email: </span>
+        <span class="text-gray-900">{{ authService.getUser().email }}</span>
+      </div>
+      <div *ngIf="authService.getUser().birthdate">
+        <span class="font-semibold text-gray-700">Birthdate: </span>
+        <span class="text-gray-900">{{ authService.getUser().birthdate | date:'yyyy/MM/dd' }}</span>
+      </div>
+    </div>
+
+    <!-- User actions -->
+    <div class="w-full flex flex-col md:flex-row gap-3 mt-6">
+      <button mat-flat-button color="accent"
+        class="flex flex-1 items-center justify-center font-bold px-4 py-2 rounded-lg text-white bg-red-500 hover:bg-red-600 transition min-w-0"
+        >
+        <mat-icon class="mr-2 text-lg flex-shrink-0">edit</mat-icon>
+        <span class="whitespace-nowrap">Edit info</span>
+      </button>
+      <button mat-flat-button color="warn"
+        class="flex flex-1 items-center justify-center font-bold px-4 py-2 rounded-lg text-white bg-red-700 hover:bg-red-800 transition min-w-0"
+        (click)="authService.logout()">
+        <mat-icon class="mr-2 text-lg flex-shrink-0">logout</mat-icon>
+        <span class="whitespace-nowrap">Logout</span>
+      </button>
+      <button mat-stroked-button color="warn"
+        class="flex flex-1 items-center justify-center font-bold px-4 py-2 rounded-lg border-2 border-red-700 text-red-700 hover:bg-red-100 transition min-w-0"
+        (click)="authService.logoutAllDevices()">
+        <mat-icon class="mr-2 text-lg flex-shrink-0">logout</mat-icon>
+        <span class="whitespace-nowrap">Logout all devices</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Back button -->
+  <div class="w-full flex justify-center">
+    <div class="w-full max-w-2xl mt-6 flex justify-center md:justify-end">
+      <button mat-stroked-button color="primary"
+        class="font-bold px-8 py-3 rounded-lg border-2 border-red-600 text-red-700 hover:!bg-red-100 text-lg flex items-center justify-center cursor-pointer"
+        (click)="goBack()">
+        <mat-icon class="mr-2">arrow_back</mat-icon>
+        Back
+      </button>
+    </div>
+  </div>
+</section>

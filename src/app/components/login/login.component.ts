@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { GoogleloginComponent } from "../googlelogin/googlelogin.component";
+import { ListService } from '../../services/list/list.service';
 
 @Component({
   selector: 'app-login',
@@ -22,7 +23,7 @@ export class LoginComponent {
   loginForm!: FormGroup
   rememberMe: boolean = false
 
-  constructor(public authService: AuthService, private fb: FormBuilder, private router: Router) 
+  constructor(public authService: AuthService, private fb: FormBuilder, private router: Router, private listService: ListService) 
   {
     // Initialize the login form with form controls and validators
     this.loginForm = this.fb.group({
@@ -67,6 +68,28 @@ export class LoginComponent {
         // Remove the token from local storage if it exists, when the remember me checkbox is not checked
         localStorage.removeItem('token')
       }
+
+        this.authService.setToken(token)
+        this.authService.changeLoginStatus(true)
+
+        // Fetch user lists when the user logs in
+        this.listService.getUserLists(token)
+          .then(lists => {
+            if (lists.length === 0) 
+            {
+              this.listService.setLists([])
+              console.log('No lists found for the user.')
+            }
+            else
+            {
+              this.listService.setLists(lists)
+            } 
+          })
+          .catch(err => {
+            console.error('Error fetching user lists:', err)
+          })
+      
+
 
       this.router.navigate(['/'])
     } catch (e: any) {
