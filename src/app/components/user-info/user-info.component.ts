@@ -7,10 +7,11 @@ import { User } from '../../interfaces/user';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ListService } from '../../services/list/list.service';
+import { UserInfoSkeletonComponent } from '../skeletons/user-info-skeleton/user-info-skeleton.component';
 
 @Component({
   selector: 'app-user-info',
-  imports: [CommonModule, MatIconModule, ReactiveFormsModule],
+  imports: [CommonModule, MatIconModule, ReactiveFormsModule, UserInfoSkeletonComponent],
   templateUrl: './user-info.component.html',
   styleUrl: './user-info.component.css'
 })

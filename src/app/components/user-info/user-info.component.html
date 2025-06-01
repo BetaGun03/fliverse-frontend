@@ -1,223 +1,258 @@
+<!-- Main section: centers content and applies background gradient -->
 <section class="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-red-100 via-white to-red-200 px-4 py-8">
-  <div class="w-full max-w-2xl bg-white rounded-2xl shadow-xl border-2 border-red-200 p-8">
 
-    <div class="flex flex-col items-center mb-6">
-      <img
-        *ngIf="authService.getUser().profilePic; else defaultAvatar"
-        [src]="authService.getUser().profilePic"
-        alt="Profile picture"
-        class="w-28 h-28 rounded-full border-4 border-red-300 shadow mb-2 object-cover"
-      />
-      <ng-template #defaultAvatar>
-        <div class="w-28 h-28 rounded-full bg-red-100 flex items-center justify-center border-4 border-red-300 shadow mb-2">
-          <mat-icon class="text-5xl text-red-400">person</mat-icon>
+  <!-- Loading skeleton shown while data is loading -->
+  <ng-container *ngIf="isLoading; else userInfoContent">
+    <app-user-info-skeleton></app-user-info-skeleton>
+  </ng-container>
+
+  <!-- Main user info content -->
+  <ng-template #userInfoContent>
+    <div class="w-full max-w-2xl bg-white rounded-2xl shadow-xl border-2 border-red-200 p-8">
+
+      <!-- User avatar and basic info -->
+      <div class="flex flex-col items-center mb-6">
+        <!-- Show profile picture if available, else show default avatar -->
+        <img
+          *ngIf="authService.getUser().profilePic; else defaultAvatar"
+          [src]="authService.getUser().profilePic"
+          alt="Profile picture"
+          class="w-28 h-28 rounded-full border-4 border-red-300 shadow mb-2 object-cover"
+        />
+        <ng-template #defaultAvatar>
+          <div class="w-28 h-28 rounded-full bg-red-100 flex items-center justify-center border-4 border-red-300 shadow mb-2">
+            <mat-icon class="text-5xl text-red-400">person</mat-icon>
+          </div>
+        </ng-template>
+
+        <!-- Username -->
+        <h1 class="text-3xl font-bold text-red-700">
+          {{ authService.getUser().username }}
+        </h1>
+
+        <!-- Email (if available) -->
+        <p class="text-gray-500 text-base" *ngIf="authService.getUser().email">
+          {{ authService.getUser().email }}
+        </p>
+      </div>
+
+      <!-- Card for personal data (shown if not editing) -->
+      <div class="w-full bg-red-50 rounded-xl border border-red-200 shadow p-6 space-y-4" *ngIf="!showEditForm">
+
+        <!-- Name (if available) -->
+        <div *ngIf="authService.getUser().name">
+          <span class="font-semibold text-gray-700">Name: </span>
+          <span class="text-gray-900">{{ authService.getUser().name }}</span>
         </div>
-      </ng-template>
-      <h1 class="text-3xl font-bold text-red-700">{{ authService.getUser().username }}</h1>
-      <p class="text-gray-500 text-base" *ngIf="authService.getUser().email">{{ authService.getUser().email }}</p>
-    </div>
 
-    <!-- Card for personal data -->
-    <div class="w-full bg-red-50 rounded-xl border border-red-200 shadow p-6 space-y-4" *ngIf="!showEditForm">
-      <div *ngIf="authService.getUser().name">
-        <span class="font-semibold text-gray-700">Name: </span>
-        <span class="text-gray-900">{{ authService.getUser().name }}</span>
-      </div>
-      <div>
-        <span class="font-semibold text-gray-700">Username: </span>
-        <span class="text-gray-900">{{ authService.getUser().username }}</span>
-      </div>
-      <div *ngIf="authService.getUser().email">
-        <span class="font-semibold text-gray-700">Email: </span>
-        <span class="text-gray-900">{{ authService.getUser().email }}</span>
-      </div>
-      <div *ngIf="authService.getUser().birthdate">
-        <span class="font-semibold text-gray-700">Birthdate: </span>
-        <span class="text-gray-900">{{ authService.getUser().birthdate | date:'yyyy-MM-dd' }}</span>
-      </div>
-    </div>
+        <!-- Username -->
+        <div>
+          <span class="font-semibold text-gray-700">Username: </span>
+          <span class="text-gray-900">{{ authService.getUser().username }}</span>
+        </div>
 
-    <!-- User actions -->
-    <div class="w-full flex flex-col md:flex-row gap-3 mt-6" *ngIf="!showEditForm">
-      <!-- Edit info button -->
-      <button mat-flat-button color="accent"
-        class="flex flex-1 items-center justify-center font-bold px-4 py-2 rounded-lg text-white bg-red-500 hover:bg-red-600 transition min-w-0 cursor-pointer"
-        (click)="openEditForm()">
-        <mat-icon class="mr-2 text-lg flex-shrink-0">edit</mat-icon>
-        <span class="whitespace-nowrap">Edit info</span>
-      </button>
-      <!-- Logout button -->
-      <button mat-flat-button color="warn"
-        class="relative flex flex-1 items-center justify-center font-bold px-4 py-2 rounded-lg text-white bg-red-700 hover:bg-red-800 transition min-w-0 cursor-pointer overflow-hidden"
-        (click)="logout()">
-        <ng-container *ngIf="!isLoggingOut; else logoutSpinner">
-          <mat-icon class="mr-2 text-lg flex-shrink-0">logout</mat-icon>
-          <span class="whitespace-nowrap">Logout</span>
-        </ng-container>
-        <ng-template #logoutSpinner>
-          <span class="absolute inset-0 flex items-center justify-center">
-            <svg stroke="white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="28" height="28">
-              <g>
-                <circle cx="12" cy="12" r="9.5" fill="none" stroke-width="3" stroke-linecap="round">
-                  <animate attributeName="stroke-dasharray" dur="1.5s" calcMode="spline" values="0 150;42 150;42 150;42 150" keyTimes="0;0.475;0.95;1" keySplines="0.42,0,0.58,1;0.42,0,0.58,1;0.42,0,0.58,1" repeatCount="indefinite"/>
-                  <animate attributeName="stroke-dashoffset" dur="1.5s" calcMode="spline" values="0;-16;-59;-59" keyTimes="0;0.475;0.95;1" keySplines="0.42,0,0.58,1;0.42,0,0.58,1;0.42,0,0.58,1" repeatCount="indefinite"/>
-                </circle>
-                <animateTransform attributeName="transform" type="rotate" dur="2s" values="0 12 12;360 12 12" repeatCount="indefinite"/>
-              </g>
-            </svg>
-          </span>
-        </ng-template>
-      </button>
-      <!-- Logout all devices button -->
-      <button mat-stroked-button color="warn"
-        class="relative flex flex-1 items-center justify-center font-bold px-4 py-2 rounded-lg border-2 border-red-700 text-red-700 hover:bg-red-100 transition min-w-0 cursor-pointer overflow-hidden"
-        (click)="logoutAllDevices()">
-        <ng-container *ngIf="!isLoggingOutAll; else logoutAllSpinner">
-          <mat-icon class="mr-2 text-lg flex-shrink-0">logout</mat-icon>
-          <span class="whitespace-nowrap">Logout all devices</span>
-        </ng-container>
-        <ng-template #logoutAllSpinner>
-          <span class="absolute inset-0 flex items-center justify-center">
-            <svg stroke="#b91c1c" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="28" height="28">
-              <g>
-                <circle cx="12" cy="12" r="9.5" fill="none" stroke-width="3" stroke-linecap="round">
-                  <animate attributeName="stroke-dasharray" dur="1.5s" calcMode="spline" values="0 150;42 150;42 150;42 150" keyTimes="0;0.475;0.95;1" keySplines="0.42,0,0.58,1;0.42,0,0.58,1;0.42,0,0.58,1" repeatCount="indefinite"/>
-                  <animate attributeName="stroke-dashoffset" dur="1.5s" calcMode="spline" values="0;-16;-59;-59" keyTimes="0;0.475;0.95;1" keySplines="0.42,0,0.58,1;0.42,0,0.58,1;0.42,0,0.58,1" repeatCount="indefinite"/>
-                </circle>
-                <animateTransform attributeName="transform" type="rotate" dur="2s" values="0 12 12;360 12 12" repeatCount="indefinite"/>
-              </g>
-            </svg>
-          </span>
-        </ng-template>
-      </button>
-    </div>
+        <!-- Email (if available) -->
+        <div *ngIf="authService.getUser().email">
+          <span class="font-semibold text-gray-700">Email: </span>
+          <span class="text-gray-900">{{ authService.getUser().email }}</span>
+        </div>
 
-    <!-- Edit user info form -->
-    <form *ngIf="showEditForm" [formGroup]="editForm" (ngSubmit)="editUserInfo()" class="w-full max-w-2xl mx-auto bg-white rounded-2xl shadow-xl border-2 border-red-200 p-8 mt-4 space-y-6 mb-8">
-      <h2 class="text-2xl font-bold text-red-700 mb-4">Edit your info</h2>
-
-      <!-- Email -->
-      <div>
-        <label class="block font-semibold text-gray-700 mb-1" for="email">Email</label>
-        <input
-          id="email"
-          type="email"
-          formControlName="email"
-          autocomplete="email"
-          placeholder="user@example.com"
-          class="w-full px-4 py-2 border-2 border-red-200 rounded-lg focus:outline-none focus:border-red-400 placeholder:text-gray-300 transition"
-          [class.border-red-500]="editForm.get('email')?.invalid && editForm.get('email')?.touched"
-        />
-        <span *ngIf="editForm.get('email')?.invalid && editForm.get('email')?.touched" class="text-red-600 text-sm">
-          Please enter a valid email.
-        </span>
+        <!-- Birthdate (if available) -->
+        <div *ngIf="authService.getUser().birthdate">
+          <span class="font-semibold text-gray-700">Birthdate: </span>
+          <span class="text-gray-900">{{ authService.getUser().birthdate | date:'yyyy-MM-dd' }}</span>
+        </div>
       </div>
 
-      <!-- Name -->
-      <div>
-        <label class="block font-semibold text-gray-700 mb-1" for="name">Name</label>
-        <input
-          id="name"
-          type="text"
-          formControlName="name"
-          autocomplete="name"
-          placeholder="Your full name"
-          class="w-full px-4 py-2 border-2 border-red-200 rounded-lg focus:outline-none focus:border-red-400 placeholder:text-gray-300 transition"
-        />
+      <!-- User action buttons (shown if not editing) -->
+      <div class="w-full flex flex-col md:flex-row gap-3 mt-6" *ngIf="!showEditForm">
+
+        <!-- Edit info button -->
+        <button mat-flat-button color="accent"
+          class="flex flex-1 items-center justify-center font-bold px-4 py-2 rounded-lg text-white bg-red-500 hover:bg-red-600 transition min-w-0 cursor-pointer"
+          (click)="openEditForm()">
+          <mat-icon class="mr-2 text-lg flex-shrink-0">edit</mat-icon>
+          <span class="whitespace-nowrap">Edit info</span>
+        </button>
+
+        <!-- Logout button with spinner when logging out -->
+        <button mat-flat-button color="warn"
+          class="relative flex flex-1 items-center justify-center font-bold px-4 py-2 rounded-lg text-white bg-red-700 hover:bg-red-800 transition min-w-0 cursor-pointer overflow-hidden"
+          (click)="logout()">
+          <ng-container *ngIf="!isLoggingOut; else logoutSpinner">
+            <mat-icon class="mr-2 text-lg flex-shrink-0">logout</mat-icon>
+            <span class="whitespace-nowrap">Logout</span>
+          </ng-container>
+          <ng-template #logoutSpinner>
+            <span class="absolute inset-0 flex items-center justify-center">
+              <!-- Spinner SVG -->
+              <svg stroke="white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="28" height="28">
+                <g>
+                  <circle cx="12" cy="12" r="9.5" fill="none" stroke-width="3" stroke-linecap="round">
+                    <animate attributeName="stroke-dasharray" dur="1.5s" calcMode="spline" values="0 150;42 150;42 150;42 150" keyTimes="0;0.475;0.95;1" keySplines="0.42,0,0.58,1;0.42,0,0.58,1;0.42,0,0.58,1" repeatCount="indefinite"/>
+                    <animate attributeName="stroke-dashoffset" dur="1.5s" calcMode="spline" values="0;-16;-59;-59" keyTimes="0;0.475;0.95;1" keySplines="0.42,0,0.58,1;0.42,0,0.58,1;0.42,0,0.58,1" repeatCount="indefinite"/>
+                  </circle>
+                  <animateTransform attributeName="transform" type="rotate" dur="2s" values="0 12 12;360 12 12" repeatCount="indefinite"/>
+                </g>
+              </svg>
+            </span>
+          </ng-template>
+        </button>
+
+        <!-- Logout all devices button with spinner -->
+        <button mat-stroked-button color="warn"
+          class="relative flex flex-1 items-center justify-center font-bold px-4 py-2 rounded-lg border-2 border-red-700 text-red-700 hover:bg-red-100 transition min-w-0 cursor-pointer overflow-hidden"
+          (click)="logoutAllDevices()">
+          <ng-container *ngIf="!isLoggingOutAll; else logoutAllSpinner">
+            <mat-icon class="mr-2 text-lg flex-shrink-0">logout</mat-icon>
+            <span class="whitespace-nowrap">Logout all devices</span>
+          </ng-container>
+          <ng-template #logoutAllSpinner>
+            <span class="absolute inset-0 flex items-center justify-center">
+              <!-- Spinner SVG -->
+              <svg stroke="#b91c1c" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="28" height="28">
+                <g>
+                  <circle cx="12" cy="12" r="9.5" fill="none" stroke-width="3" stroke-linecap="round">
+                    <animate attributeName="stroke-dasharray" dur="1.5s" calcMode="spline" values="0 150;42 150;42 150;42 150" keyTimes="0;0.475;0.95;1" keySplines="0.42,0,0.58,1;0.42,0,0.58,1;0.42,0,0.58,1" repeatCount="indefinite"/>
+                    <animate attributeName="stroke-dashoffset" dur="1.5s" calcMode="spline" values="0;-16;-59;-59" keyTimes="0;0.475;0.95;1" keySplines="0.42,0,0.58,1;0.42,0,0.58,1;0.42,0,0.58,1" repeatCount="indefinite"/>
+                  </circle>
+                  <animateTransform attributeName="transform" type="rotate" dur="2s" values="0 12 12;360 12 12" repeatCount="indefinite"/>
+                </g>
+              </svg>
+            </span>
+          </ng-template>
+        </button>
       </div>
 
-      <!-- Birthdate -->
-      <div>
-        <label class="block font-semibold text-gray-700 mb-1" for="birthdate">Birthdate</label>
-        <input
-          id="birthdate"
-          type="text"
-          formControlName="birthdate"
-          placeholder="YYYY/MM/DD"
-          class="w-full px-4 py-2 border-2 border-red-200 rounded-lg focus:outline-none focus:border-red-400 placeholder:text-gray-300 transition"
-          [class.border-red-500]="editForm.get('birthdate')?.invalid && editForm.get('birthdate')?.touched"
-        />
-        <span *ngIf="editForm.get('birthdate')?.invalid && editForm.get('birthdate')?.touched" class="text-red-600 text-sm">
-          Please enter a valid date (YYYY/MM/DD).
-        </span>
-      </div>
+      <!-- Edit user info form (shown when editing) -->
+      <form *ngIf="showEditForm" [formGroup]="editForm" (ngSubmit)="editUserInfo()" class="w-full max-w-2xl mx-auto bg-white rounded-2xl shadow-xl border-2 border-red-200 p-8 mt-4 space-y-6 mb-8">
 
-      <!-- Password -->
-      <div>
-        <label class="block font-semibold text-gray-700 mb-1" for="password">New password</label>
-        <input
-          id="password"
-          type="password"
-          formControlName="password"
-          autocomplete="new-password"
-          placeholder="At least 8 characters"
-          class="w-full px-4 py-2 border-2 border-red-200 rounded-lg focus:outline-none focus:border-red-400 placeholder:text-gray-300 transition"
-          [class.border-red-500]="editForm.get('password')?.invalid && editForm.get('password')?.touched"
-        />
-        <span class="text-gray-400 text-xs">Leave blank to keep current password</span>
-        <span *ngIf="editForm.get('password')?.invalid && editForm.get('password')?.touched" class="text-red-600 text-sm block">
-          Password must be at least 8 characters.
-        </span>
-      </div>
+        <h2 class="text-2xl font-bold text-red-700 mb-4">Edit your info</h2>
 
-      <!-- Profile picture -->
-      <div>
-        <span class="block font-semibold text-gray-700 mb-1">Upload your profile picture</span>
-        <p class="text-sm text-gray-500 mb-2">File should be an image</p>
-        <label
-          for="file-input"
-          class="drop-container !border-red-600 hover:!bg-red-50 flex flex-col items-center justify-center border-2 border-dashed rounded-lg py-6 cursor-pointer transition"
-          (dragover)="onDragOver($event)"
-          (dragleave)="onDragLeave($event)"
-          (drop)="onDrop($event)"
-        >
-          <span class="drop-title text-gray-500 mb-1">Drop files here</span>
-          <span class="text-gray-400 mb-2">or</span>
+        <!-- Email input -->
+        <div>
+          <label class="block font-semibold text-gray-700 mb-1" for="email">Email</label>
           <input
-            type="file"
-            id="file-input"
-            accept=".jpg,.jpeg,.png,.webp"
-            (change)="onProfilePicChange($event)"
-            class="hidden"
+            id="email"
+            type="email"
+            formControlName="email"
+            autocomplete="email"
+            placeholder="user@example.com"
+            class="w-full px-4 py-2 border-2 border-red-200 rounded-lg focus:outline-none focus:border-red-400 placeholder:text-gray-300 transition"
+            [class.border-red-500]="editForm.get('email')?.invalid && editForm.get('email')?.touched"
           />
-          <span class="text-xs text-gray-400 mt-2">Accepted: JPG, JPEG, PNG, WEBP</span>
-          <span *ngIf="selectedProfilePicName" class="block mt-2 text-sm text-red-700 font-semibold">
-            {{ selectedProfilePicName }}
+          <span *ngIf="editForm.get('email')?.invalid && editForm.get('email')?.touched" class="text-red-600 text-sm">
+            Please enter a valid email.
           </span>
-        </label>
-      </div>
+        </div>
 
-      <!-- Buttons -->
-      <div class="flex gap-4 justify-end mt-6">
-        <button
-          type="button"
-          (click)="cancelEdit()"
-          [disabled]="isChangingInfo"
-          class="px-6 py-2 rounded-lg border-2 border-red-400 text-red-700 bg-white hover:bg-red-100 font-bold transition disabled:opacity-60 cursor-pointer"
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          [disabled]="editForm.invalid || isChangingInfo"
-          class="px-6 py-2 rounded-lg bg-red-500 text-white font-bold hover:bg-red-600 transition disabled:opacity-60 cursor-pointer"
-        >
-          Save changes
-        </button>
-      </div>
-    </form>
+        <!-- Name input -->
+        <div>
+          <label class="block font-semibold text-gray-700 mb-1" for="name">Name</label>
+          <input
+            id="name"
+            type="text"
+            formControlName="name"
+            autocomplete="name"
+            placeholder="Your full name"
+            class="w-full px-4 py-2 border-2 border-red-200 rounded-lg focus:outline-none focus:border-red-400 placeholder:text-gray-300 transition"
+          />
+        </div>
 
-  </div>
+        <!-- Birthdate input -->
+        <div>
+          <label class="block font-semibold text-gray-700 mb-1" for="birthdate">Birthdate</label>
+          <input
+            id="birthdate"
+            type="text"
+            formControlName="birthdate"
+            placeholder="YYYY/MM/DD"
+            class="w-full px-4 py-2 border-2 border-red-200 rounded-lg focus:outline-none focus:border-red-400 placeholder:text-gray-300 transition"
+            [class.border-red-500]="editForm.get('birthdate')?.invalid && editForm.get('birthdate')?.touched"
+          />
+          <span *ngIf="editForm.get('birthdate')?.invalid && editForm.get('birthdate')?.touched" class="text-red-600 text-sm">
+            Please enter a valid date (YYYY/MM/DD).
+          </span>
+        </div>
 
-  <!-- Back button -->
-  <div class="w-full flex justify-center">
-    <div class="w-full max-w-2xl mt-6 flex justify-center md:justify-end">
-      <button mat-stroked-button color="primary"
-        class="font-bold px-8 py-3 rounded-lg border-2 border-red-600 text-red-700 hover:bg-red-200 text-lg flex items-center justify-center cursor-pointer"
-        (click)="goBack()">
-        <mat-icon class="mr-2">arrow_back</mat-icon>
-        Back
-      </button>
+        <!-- Password input -->
+        <div>
+          <label class="block font-semibold text-gray-700 mb-1" for="password">New password</label>
+          <input
+            id="password"
+            type="password"
+            formControlName="password"
+            autocomplete="new-password"
+            placeholder="At least 8 characters"
+            class="w-full px-4 py-2 border-2 border-red-200 rounded-lg focus:outline-none focus:border-red-400 placeholder:text-gray-300 transition"
+            [class.border-red-500]="editForm.get('password')?.invalid && editForm.get('password')?.touched"
+          />
+          <span class="text-gray-400 text-xs">Leave blank to keep current password</span>
+          <span *ngIf="editForm.get('password')?.invalid && editForm.get('password')?.touched" class="text-red-600 text-sm block">
+            Password must be at least 8 characters.
+          </span>
+        </div>
+
+        <!-- Profile picture upload -->
+        <div>
+          <span class="block font-semibold text-gray-700 mb-1">Upload your profile picture</span>
+          <p class="text-sm text-gray-500 mb-2">File should be an image</p>
+          <label
+            for="file-input"
+            class="drop-container !border-red-600 hover:!bg-red-50 flex flex-col items-center justify-center border-2 border-dashed rounded-lg py-6 cursor-pointer transition"
+            (dragover)="onDragOver($event)"
+            (dragleave)="onDragLeave($event)"
+            (drop)="onDrop($event)"
+          >
+            <span class="drop-title text-gray-500 mb-1">Drop files here</span>
+            <span class="text-gray-400 mb-2">or</span>
+            <input
+              type="file"
+              id="file-input"
+              accept=".jpg,.jpeg,.png,.webp"
+              (change)="onProfilePicChange($event)"
+              class="hidden"
+            />
+            <span class="text-xs text-gray-400 mt-2">Accepted: JPG, JPEG, PNG, WEBP</span>
+            <span *ngIf="selectedProfilePicName" class="block mt-2 text-sm text-red-700 font-semibold">
+              {{ selectedProfilePicName }}
+            </span>
+          </label>
+        </div>
+
+        <!-- Form action buttons -->
+        <div class="flex gap-4 justify-end mt-6">
+          <!-- Cancel button -->
+          <button
+            type="button"
+            (click)="cancelEdit()"
+            [disabled]="isChangingInfo"
+            class="px-6 py-2 rounded-lg border-2 border-red-400 text-red-700 bg-white hover:bg-red-100 font-bold transition disabled:opacity-60 cursor-pointer"
+          >
+            Cancel
+          </button>
+          <!-- Save changes button -->
+          <button
+            type="submit"
+            [disabled]="editForm.invalid || isChangingInfo"
+            class="px-6 py-2 rounded-lg bg-red-500 text-white font-bold hover:bg-red-600 transition disabled:opacity-60 cursor-pointer"
+          >
+            Save changes
+          </button>
+        </div>
+      </form>
     </div>
-  </div>
+
+    <!-- Back button (always visible) -->
+    <div class="w-full flex justify-center">
+      <div class="w-full max-w-2xl mt-6 flex justify-center md:justify-end">
+        <button mat-stroked-button color="primary"
+          class="font-bold px-8 py-3 rounded-lg border-2 border-red-600 text-red-700 hover:bg-red-200 text-lg flex items-center justify-center cursor-pointer"
+          (click)="goBack()">
+          <mat-icon class="mr-2">arrow_back</mat-icon>
+          Back
+        </button>
+      </div>
+    </div>
+  </ng-template>
 </section>
