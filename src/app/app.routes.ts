@@ -3,6 +3,7 @@ import { HomeComponent } from './components/home/home.component';
 import { PrivacypoliciesComponent } from './components/privacypolicies/privacypolicies.component';
 import { ServiceconditionsComponent } from './components/serviceconditions/serviceconditions.component';
 import { ListDetailsComponent } from './components/list-details/list-details.component';
+import { authGuard } from './guards/auth/auth.guard';
 
 export const routes: Routes = [
     { path: "", component: HomeComponent },
@@ -11,8 +12,8 @@ export const routes: Routes = [
     { path: "termsofservice", component: ServiceconditionsComponent },
     { path: "login", loadComponent: () => import('./components/login/login.component').then(m => m.LoginComponent) },
     { path: "register", loadComponent: () => import('./components/register/register.component').then(m => m.RegisterComponent) },
-    { path: "lists", loadComponent: () => import('./components/lists/lists.component').then(m => m.ListsComponent) },
-    { path: 'lists/:id', component: ListDetailsComponent },
-    { path: "user", loadComponent: () => import('./components/user-info/user-info.component').then(m => m.UserInfoComponent) },
-    { path: "watched", loadComponent: () => import('./components/watched/watched.component').then(m => m.WatchedComponent) },
+    { path: "lists", loadComponent: () => import('./components/lists/lists.component').then(m => m.ListsComponent), canActivate: [authGuard], canMatch: [authGuard] },
+    { path: 'lists/:id', component: ListDetailsComponent, canActivate: [authGuard], canMatch: [authGuard] },
+    { path: "user", loadComponent: () => import('./components/user-info/user-info.component').then(m => m.UserInfoComponent), canActivate: [authGuard], canMatch: [authGuard] },
+    { path: "watched", loadComponent: () => import('./components/watched/watched.component').then(m => m.WatchedComponent), canActivate: [authGuard], canMatch: [authGuard] },
 ];
