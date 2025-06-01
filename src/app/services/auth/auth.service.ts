@@ -192,30 +192,139 @@ export class AuthService {
   }
 
   // Function to logout the user. It clears the token from local storage and resets the user object
-  logout(): void
+  async logout(): Promise<void>
   {
-    localStorage.removeItem('token') // Remove token from local storage
-    this.user = {} as User // Clear user object
-    this.isLoggedIn = false
-    this.listService.setLists([]) // Clear user lists
+    const url = "https://api.fliverse.es/users/logout"
+
+    try{
+      await axios.post(url, {}, {
+        headers: {
+          'Authorization': `Bearer ${this.getToken()}`
+        }
+      })
+
+      localStorage.removeItem('token') // Remove token from local storage
+      this.user = {} as User // Clear user object
+      this.isLoggedIn = false
+      this.listService.setLists([]) // Clear user lists
+    } catch (error) {
+      console.error("Logout failed:", error)
+    }
+    
   }
 
   // Function to logout the user from all devices. It clears the token from local storage and resets the user object
-  //TERMINARLA
-  logoutAllDevices(): void
+  async logoutAllDevices(): Promise<void>
   {
-    /*
-    localStorage.removeItem('token') // Remove token from local storage
-    this.user = {} as User // Clear user object
-    this.isLoggedIn = false
-    this.listService.setLists([]) // Clear user lists*/
+    const url = "https://api.fliverse.es/users/logoutAll"
+
+    try {
+      await axios.post(url, {}, {
+        headers: {
+          'Authorization': `Bearer ${this.getToken()}`
+        }
+      })
+
+      localStorage.removeItem('token') // Remove token from local storage
+      this.user = {} as User // Clear user object
+      this.isLoggedIn = false
+      this.listService.setLists([]) // Clear user lists
+    } catch (error) {
+      console.error("Logout failed:", error)
+    }
+    
   }
 
   // Function to edit user information. It returns a Promise of the updated User object
-  editUserInfo(user: User): Promise<User>
+  async editUserInfo(user: User): Promise<User>
   {
-    // Placeholder for editing user info functionality
-    return Promise.reject(new Error("editUserInfo not implemented yet"))
+    const url = "https://api.fliverse.es/users/me"
+
+    // Check if profilePicFile is a valid File object
+    const hasProfilePic = !!user.profilePicFile && typeof user.profilePicFile === 'object' && 'size' in user.profilePicFile && 'type' in user.profilePicFile
+
+    let response
+
+    // If profilePicFile is provided, use FormData to send the request
+    if (hasProfilePic) 
+    {
+      const formData = new FormData()
+
+      if (user.email) 
+      {
+        formData.append("email", user.email)
+      }
+
+      if (user.name) 
+      {
+        formData.append("name", user.name)
+      }
+
+      if (user.birthdate) 
+      {
+        formData.append("birthdate", user.birthdate instanceof Date ? user.birthdate.toISOString() : user.birthdate)
+      }
+
+      if(user.password)
+      {
+        formData.append("password", user.password)
+      }
+
+      formData.append("profile_pic", user.profilePicFile as File)
+
+      response = await axios.patch(url, formData, {
+        headers: {
+          'Authorization': `Bearer ${this.getToken()}`
+        }
+      })
+    } 
+    else // If profilePicFile is not provided, send a regular JSON request
+    {
+      const data: any = {}
+
+      if (user.email) 
+      {
+        data.email = user.email
+      }
+
+      if (user.name) 
+      {
+        data.name = user.name
+      }
+      
+      if (user.birthdate) 
+      {
+        data.birthdate = user.birthdate instanceof Date ? user.birthdate.toISOString() : user.birthdate
+      }
+
+      if(user.password)
+      {
+        data.password = user.password
+      }
+
+      response = await axios.patch(url, data, {
+        headers: {
+          'Authorization': `Bearer ${this.getToken()}`
+        }
+      })
+    }
+
+    if (response.status !== 200) 
+    {
+      throw new Error("Failed to update user information")
+    }
+
+    this.user = {
+      ...this.user,
+      ...response.data,
+      birthdate: response.data.birthdate ? new Date(response.data.birthdate) : undefined,
+      profilePic: response.data.profile_pic
+    }
+
+    this.user.profilePicFile = undefined // Clear the profilePicFile after updating
+    this.user.password = undefined // Clear the password after updating
+
+    return this.user
   }
 
   isAuthenticated(): boolean
