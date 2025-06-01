@@ -4,6 +4,7 @@ import { AuthService } from '../../services/auth/auth.service';
 import { User } from '../../interfaces/user';
 import { CommonModule } from '@angular/common';
 import { ListService } from '../../services/list/list.service';
+import { ContentService } from '../../services/content/content.service';
 
 declare const google: any
 
@@ -17,7 +18,7 @@ export class GoogleloginComponent {
 
   isLoading: boolean = false
 
-  constructor(private router: Router, private auth: AuthService, private ngZone: NgZone, private listService: ListService) { }
+  constructor(private router: Router, private auth: AuthService, private ngZone: NgZone, private listService: ListService, private contentService: ContentService) { }
 
   ngOnInit()
   {
@@ -87,7 +88,16 @@ export class GoogleloginComponent {
           .catch(err => {
             console.error('Error fetching user lists:', err)
           })
-          
+
+        // Fetch user watched contents
+        this.contentService.getUserWatchedContents(data.bdtoken)
+          .then(watchedContents => {
+            this.contentService.setWatchedContents(watchedContents)
+          })
+          .catch(err => {
+            console.error('Error fetching user watched contents:', err)
+          })
+
         this.router.navigate(['/'])
       })
       .catch(async error => {

@@ -243,6 +243,16 @@ export class ContentComponent {
       
       // Update the local status
       this.userWatchedStatus = newStatus === 'watched' ? 'Watched' : 'To watch'
+
+      if(this.userWatchedStatus === "Watched")
+      {
+        this.contentService.addWatchedContent(this.content)
+      }
+      else
+      {
+        this.contentService.removeWatchedContent(this.content)
+      }
+
       } catch (err: any) {
         // If the association does not exist, try to create it and then patch again
         if (err.message === 'Association not found.') 

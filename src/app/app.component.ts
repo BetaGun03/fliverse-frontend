@@ -6,6 +6,7 @@ import { filter } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
 import { AuthService } from './services/auth/auth.service';
 import { ListService } from './services/list/list.service';
+import { ContentService } from './services/content/content.service';
 
 @Component({
     selector: 'app-root',
@@ -18,7 +19,7 @@ export class AppComponent {
   title = 'Fliverse'
   showHeader = true
 
-  constructor(private router: Router, public auth: AuthService, private listService: ListService)
+  constructor(private router: Router, public auth: AuthService, private listService: ListService, private contentService: ContentService)
   {
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
@@ -52,6 +53,14 @@ export class AppComponent {
         .catch(err => {
           console.error('Error fetching user lists:', err)
         })
+
+        this.contentService.getUserWatchedContents(token)
+          .then(watchedContents => {
+            this.contentService.setWatchedContents(watchedContents)
+          })
+          .catch(err => {
+            console.error('Error fetching user watched contents:', err)
+          })
     }
   }
 

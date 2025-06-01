@@ -6,8 +6,34 @@ import axios from 'axios';
   providedIn: 'root'
 })
 export class ContentService {
+
+  private watchedContents: Content[] = []
   
   constructor() { }
+
+  // Get watched contents from the service. It returns an array of Content objects
+  getWatchedContents(): Content[]
+  {
+    return this.watchedContents
+  }
+
+  // Set watched contents in the service. It takes an array of Content objects as parameter
+  setWatchedContents(contents: Content[]): void
+  {
+    this.watchedContents = contents
+  }
+
+  // Add a watched content to the service. It takes a Content object as parameter
+  addWatchedContent(content: Content): void
+  {
+    this.watchedContents.unshift(content)
+  }
+
+  // Remove a watched content from the service. It takes a Content object as parameter
+  removeWatchedContent(content: Content): void
+  {
+    this.watchedContents = this.watchedContents.filter(c => c.id !== content.id)
+  }
 
   // Get random contents from the API. It returns a Promise of an array of Content objects
   async getRandomContents(n: number, genres: string[], keywords: string[]): Promise<Content[]> 
@@ -398,7 +424,7 @@ export class ContentService {
     }
   }
 
-  // Add user watched status for content.
+  // Add user watched status for content. It takes token and contentId as parameters. It returns a Promise of a string (the status of the association)
   async createUserContentAssociation(token: string, contentId: string): Promise<string>
   {
     const url = `https://api.fliverse.es/contents_user`
@@ -431,4 +457,55 @@ export class ContentService {
       throw new Error('Error creating user-content association.')
     }
   }
+
+  // Get user watched contents. It takes token as parameter. It returns a Promise of an array of Content objects
+  async getUserWatchedContents(token: string): Promise<Content[]>
+  {
+    const url = `https://api.fliverse.es/contents_user/watched`
+
+    try{
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+
+      let watchedContents: Content[] = []
+
+      if (response.status === 200 && Array.isArray(response.data)) 
+      {
+        watchedContents = response.data.map((content: any) => ({
+          id: content.id,
+          title: content.title,
+          type: content.type,
+          synopsis: content.synopsis,
+          poster: content.poster,
+          trailer_url: content.trailer_url,
+          release_date: new Date(content.release_date),
+          duration: content.duration,
+          average_rating: content.average_rating,
+          genre: content.genre,
+          keywords: content.keywords,
+          watch_state: content.watch_state,
+          user_rating: content.user_rating
+        }))
+
+        this.setWatchedContents(watchedContents)
+      }
+
+      return watchedContents
+    }
+    catch (error: any) {
+      // No watched contents found
+      if (error.response && error.response.status === 404)
+      {
+        this.setWatchedContents([])
+      }
+
+      console.error('Error fetching user watched contents:', error)
+      this.setWatchedContents([])
+      return []
+    }
+  }
+
 }

@@ -7,27 +7,13 @@
         ======================== -->
         <div class="flex flex-col items-center mb-10">
             <h1 class="text-4xl font-extrabold text-red-700 tracking-tight flex items-center gap-2">
-                <mat-icon class="!text-3xl !text-red-400" style="line-height: 1; margin-bottom: 4px;">list</mat-icon>
-                {{ list.name }}
+                <mat-icon class="text-5xl text-red-400 align-middle leading-none scale-110" style="line-height: 1; margin-bottom: 2px;">visibility</mat-icon>
+                Watched Contents
             </h1>
             <div class="w-24 h-1 bg-red-200 rounded mt-2"></div>
         </div>
 
         <div class="w-full max-w-2xl">
-
-            <!-- =======================
-                 Description Section
-            ======================== -->
-            <div class="bg-white border-2 border-red-100 rounded-xl shadow-md p-8 mb-8">
-                <span class="text-gray-600 font-semibold">Description:</span>
-                <p class="text-gray-700 text-base mt-1" *ngIf="list.description; else noDesc">
-                    {{ list.description }}
-                </p>
-                <!-- Show if no description -->
-                <ng-template #noDesc>
-                    <span class="italic text-gray-400">No description provided.</span>
-                </ng-template>
-            </div>
 
             <!-- =======================
                  Contents Section
@@ -40,13 +26,11 @@
                     Contents
                 </h2>
 
-                <!-- List of contents if available -->
-                <ng-container *ngIf="list.contents && list.contents.length > 0; else noContents">
+                <!-- List of watched contents if available -->
+                <ng-container *ngIf="contentService.getWatchedContents().length > 0; else noContents">
                     <div class="grid grid-cols-1 gap-4">
-                        <!-- Loop through each content item -->
-                        <div *ngFor="let content of list.contents"
-                             (click)="goToContentDetails(content)"
-                             class="flex items-center bg-red-50 rounded-lg p-3 shadow-sm border border-red-100 hover:shadow-md transition hover:scale-105 cursor-pointer">
+                        <!-- Loop through each watched content item -->
+                        <div *ngFor="let content of contentService.getWatchedContents()" (click)="goToContentDetails(content)" class="flex items-center bg-red-50 rounded-lg p-3 shadow-sm border border-red-100 hover:shadow-md transition hover:scale-105 cursor-pointer">
 
                             <!-- Poster image if available -->
                             <img *ngIf="content.poster"
@@ -76,11 +60,11 @@
                     </div>
                 </ng-container>
 
-                <!-- Show if no contents in the list -->
+                <!-- Show if no watched contents -->
                 <ng-template #noContents>
                     <div class="text-gray-400 italic text-center py-6">
                         <mat-icon class="mb-1">info</mat-icon>
-                        No contents in this list.
+                        No watched contents.
                     </div>
                 </ng-template>
             </div>

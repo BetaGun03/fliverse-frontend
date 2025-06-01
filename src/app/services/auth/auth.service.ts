@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ListService } from '../list/list.service';
+import { ContentService } from '../content/content.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ export class AuthService {
   private user!: User
   private isLoggedIn: boolean = false
 
-  constructor(private router: Router, public snackBar: MatSnackBar, private listService: ListService) 
+  constructor(private router: Router, public snackBar: MatSnackBar, private listService: ListService, private contentService: ContentService) 
   {
     // Global axios interceptor to manage authentication errors. If the token is expired or invalid, it will log out the user and redirect to the login page.
     axios.interceptors.response.use(
@@ -207,6 +208,7 @@ export class AuthService {
       this.user = {} as User // Clear user object
       this.isLoggedIn = false
       this.listService.setLists([]) // Clear user lists
+      this.contentService.setWatchedContents([]) // Clear user watched contents
     } catch (error) {
       console.error("Logout failed:", error)
     }
@@ -229,6 +231,7 @@ export class AuthService {
       this.user = {} as User // Clear user object
       this.isLoggedIn = false
       this.listService.setLists([]) // Clear user lists
+      this.contentService.setWatchedContents([]) // Clear user watched contents
     } catch (error) {
       console.error("Logout failed:", error)
     }

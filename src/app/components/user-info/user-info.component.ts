@@ -8,6 +8,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractContro
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ListService } from '../../services/list/list.service';
 import { UserInfoSkeletonComponent } from '../skeletons/user-info-skeleton/user-info-skeleton.component';
+import { ContentService } from '../../services/content/content.service';
 
 @Component({
   selector: 'app-user-info',
@@ -25,7 +26,7 @@ export class UserInfoComponent {
   showEditForm: boolean = false
   selectedProfilePicName: string | null = null
 
-  constructor(public authService: AuthService, public location: Location, public router: Router, private fb: FormBuilder, public snackBar: MatSnackBar, public listService: ListService)
+  constructor(public authService: AuthService, public location: Location, public router: Router, private fb: FormBuilder, public snackBar: MatSnackBar, public listService: ListService, private contentService: ContentService)
   {
     this.loadUserInfo()
   }
@@ -141,6 +142,7 @@ export class UserInfoComponent {
           this.authService.changeUser({} as User)
           localStorage.removeItem('token')
           this.listService.setLists([])
+          this.contentService.setWatchedContents([])
           this.authService.changeLoginStatus(false)
           this.snackBar.open('Password changed successfully. Please log in again.', 'Close', {
             duration: 5000

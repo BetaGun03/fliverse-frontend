@@ -14,4 +14,5 @@ export const routes: Routes = [
     { path: "lists", loadComponent: () => import('./components/lists/lists.component').then(m => m.ListsComponent) },
     { path: 'lists/:id', component: ListDetailsComponent },
     { path: "user", loadComponent: () => import('./components/user-info/user-info.component').then(m => m.UserInfoComponent) },
+    { path: "watched", loadComponent: () => import('./components/watched/watched.component').then(m => m.WatchedComponent) },
 ];
