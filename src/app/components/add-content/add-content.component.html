@@ -1,0 +1,105 @@
+<section class="!px-4 !md:!px-0 !flex !flex-col !items-center !justify-center !min-h-screen !bg-gradient-to-br !from-red-300 !via-red-400 !to-red-500">
+    <div class="!w-full md:!max-w-2xl !max-w-xl !bg-white !rounded-2xl !shadow-xl !border-2 !border-red-200 !p-8 !mt-12 !mb-12">
+
+        <!-- Logo -->
+        <div class="!flex !flex-col !items-center !mb-6">
+            <img class="!w-25 !h-25 !mb-2" src="/logo.png" alt="Fliverse logo">
+            <h1 class="!text-3xl !font-bold !text-primary">Add a new content</h1>
+        </div>
+        
+        <form [formGroup]="addContentForm" (ngSubmit)="addContentSubmit()" class="!space-y-6">
+
+            <!-- Type radio buttons -->
+            <div class="!w-full !mb-4">
+                <label class="!block !mb-2 !text-black !font-medium">Type</label>
+                <mat-radio-group formControlName="type" class="!flex !flex-row">
+                    <mat-radio-button value="Movie" class="!mr-4">Movie</mat-radio-button>
+                    <mat-radio-button value="Series">Series</mat-radio-button>
+                </mat-radio-group>
+                <mat-error *ngIf="addContentForm.get('type')?.hasError('required') && addContentForm.get('type')?.touched">
+                    Type is required
+                </mat-error>
+            </div>
+            
+            <!-- Title input -->
+            <mat-form-field appearance="fill" class="!w-full">
+                <mat-label class="!text-black">Title</mat-label>
+                <input matInput type="text" formControlName="title" placeholder="Lord of the rings" required>
+                <mat-error *ngIf="addContentForm.get('title')?.hasError('required') && addContentForm.get('title')?.touched">
+                    Title is required
+                </mat-error>
+            </mat-form-field>
+            
+            <!-- Synopsis input -->
+            <mat-form-field appearance="fill" class="!w-full">
+                <mat-label class="!text-black">Synopsis</mat-label>
+                <textarea matInput formControlName="synopsis" placeholder="A brief synopsis of the content" required></textarea>
+                <mat-error *ngIf="addContentForm.get('synopsis')?.hasError('required') && addContentForm.get('synopsis')?.touched">
+                    Synopsis is required
+                </mat-error>
+            </mat-form-field>
+
+            <!-- Genres input -->
+            <mat-form-field appearance="fill" class="!w-full">
+                <mat-label class="!text-black">Genres</mat-label>
+                <input matInput type="text" formControlName="genre" placeholder="Action, Adventure" required>
+                <mat-error *ngIf="addContentForm.get('genre')?.hasError('required') && addContentForm.get('genre')?.touched">
+                    Genres are required
+                </mat-error>
+            </mat-form-field>
+
+            <!-- Keywords input -->
+            <mat-form-field appearance="fill" class="!w-full">
+                <mat-label class="!text-black">Keywords</mat-label>
+                <input matInput type="text" formControlName="keywords" placeholder="Fantasy, Adventure" required>
+                <mat-error *ngIf="addContentForm.get('keywords')?.hasError('required') && addContentForm.get('keywords')?.touched">
+                    Keywords are required
+                </mat-error>
+            </mat-form-field>
+
+            <!-- Duration input -->
+            <mat-form-field appearance="fill" class="!w-full">
+                <mat-label class="!text-black">Duration</mat-label>
+                <input matInput type="text" formControlName="duration" placeholder="60 (in minutes)" required>
+                <mat-error *ngIf="addContentForm.get('duration')?.hasError('required') && addContentForm.get('duration')?.touched">
+                    Duration is required
+                </mat-error>
+            </mat-form-field>
+            
+            <!-- Release date input -->
+            <mat-form-field appearance="fill" class="!w-full">
+                <mat-label class="!text-black">Release date</mat-label>
+                <input matInput [matDatepicker]="picker" formControlName="releaseDate" placeholder="YYYY-MM-DD">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+
+            <!-- Trailer URL input -->
+            <mat-form-field appearance="fill" class="!w-full">
+                <mat-label class="!text-black">Trailer URL</mat-label>
+                <input matInput type="url" formControlName="trailerUrl" placeholder="https://youtube.com/...">
+            </mat-form-field>
+
+            <!-- Upload input -->
+            <span class="form-title">Upload a poster</span>
+            <p class="form-paragraph">File should be an image</p>
+            <label for="file-input" class="drop-container !border-red-600 hover:!bg-red-50" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onDrop($event)" >
+                <span class="drop-title">Drop files here</span>
+                or
+                <input type="file" id="file-input" accept=".jpg,.jpeg,.png,.webp" (change)="onFileSelected($event)" class="">
+            </label>
+
+            <!-- Add new content button -->
+            <button mat-raised-button color="primary" type="submit"
+                class="!w-full !flex !justify-center !items-center !text-white !bg-red-600 hover:!bg-red-700 !focus:ring-4 !focus:outline-none !focus:ring-red-300 !font-bold !rounded-lg !text-base !px-5 !py-2.5 !text-center !transition"
+                style="background-color: #dc2626;"
+                [disabled]="loading">
+                <ng-container *ngIf="!loading; else loadingTpl">Add new content</ng-container>
+                <ng-template #loadingTpl>
+                    <mat-progress-spinner diameter="24" mode="indeterminate" strokeWidth="4" color="accent"></mat-progress-spinner>
+                </ng-template>
+            </button>
+            
+        </form>
+    </div>
+</section>

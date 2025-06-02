@@ -6,11 +6,11 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
 import { routes } from './app.routes';
 
 export const MY_DATE_FORMATS = {
-  parse: { dateInput: 'YYYY/MM/DD' },
+  parse: { dateInput: 'YYYY-MM-DD' },
   display: {
-    dateInput: 'YYYY/MM/DD',
+    dateInput: 'YYYY-MM-DD',
     monthYearLabel: 'MMM YYYY',
-    dateA11yLabel: 'YYYY/MM/DD',
+    dateA11yLabel: 'YYYY-MM-DD',
     monthYearA11yLabel: 'MMMM YYYY',
   },
 };

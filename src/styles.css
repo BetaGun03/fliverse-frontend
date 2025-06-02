@@ -10,3 +10,13 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .mat-mdc-progress-spinner {
   --mdc-circular-progress-active-indicator-color: white;
 }
+
+.mat-mdc-radio-button.mat-accent .mdc-radio__native-control:checked ~ .mdc-radio__background {
+  --mdc-radio-selected-icon-color: #dc2626 !important;
+  --mdc-radio-selected-focus-icon-color: #dc2626 !important;
+  --mdc-radio-selected-hover-icon-color: #dc2626 !important;
+  --mdc-radio-selected-pressed-icon-color: #dc2626 !important;
+  --mdc-radio-selected-focus-state-layer-color: #dc2626 !important;
+  --mdc-radio-selected-hover-state-layer-color: #dc2626 !important;
+  --mdc-radio-selected-pressed-state-layer-color: #dc2626 !important;
+}

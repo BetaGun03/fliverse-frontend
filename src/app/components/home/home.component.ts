@@ -5,14 +5,14 @@ import { MatIcon } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { Content } from '../../interfaces/content';
 import { ContentService } from '../../services/content/content.service';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CardComponent } from '../skeletons/card/card.component';
 import { CarrouselComponent } from '../skeletons/carrousel/carrousel.component';
 import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-home',
-  imports: [MatCardModule, MatButtonModule, MatIcon, CommonModule, CardComponent, CarrouselComponent],
+  imports: [MatCardModule, MatButtonModule, MatIcon, CommonModule, CardComponent, CarrouselComponent, RouterModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })

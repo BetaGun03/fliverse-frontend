@@ -41,7 +41,7 @@
             <!-- Birthdate input -->
             <mat-form-field appearance="fill" class="!w-full">
                 <mat-label class="!text-black">Birthdate</mat-label>
-                <input matInput [matDatepicker]="picker" formControlName="birthdate" placeholder="YYYY/MM/DD">
+                <input matInput [matDatepicker]="picker" formControlName="birthdate" placeholder="YYYY-MM-DD">
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
             </mat-form-field>
