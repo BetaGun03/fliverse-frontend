@@ -18,6 +18,7 @@ import { AuthService } from '../../services/auth/auth.service';
 })
 
 export class HomeComponent {
+
   isLoading:boolean = true // Flag to indicate loading state
   skeletonArray = Array(5) // Array to create 5 skeletons
   slides: Content[] = []
