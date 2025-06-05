@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -23,7 +23,7 @@ export class AddContentComponent {
   loading: boolean = false
   addContentForm!: FormGroup
 
-  constructor(private fb: FormBuilder, private router: Router, private snackBar: MatSnackBar, public contentService: ContentService)
+  constructor(private fb: FormBuilder, private router: Router, private snackBar: MatSnackBar, public contentService: ContentService, private location: Location)
   {
     this.addContentForm = this.fb.group({
       title: ['', [ Validators.required ] ],
@@ -135,5 +135,10 @@ export class AddContentComponent {
     {
       this.addContentForm.get('poster')?.setValue(input.files[0])
     }
+  }
+
+  goBack()
+  {
+    this.location.back()
   }
 }

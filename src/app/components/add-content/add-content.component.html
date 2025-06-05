@@ -117,5 +117,16 @@
             </button>
             
         </form>
+
+        <!-- Go back button -->
+        <div class="!flex !justify-center md:!justify-end !mt-8 md:!max-w-2xl md:!mx-auto">
+            <button mat-stroked-button color="primary"
+            class="!font-bold !px-8 !py-5 !rounded-lg !border-2 !border-red-600 !text-red-600 hover:!bg-red-600 hover:!text-white !text-lg !flex !items-center !gap-2 !transition-all !h-8"
+            (click)="goBack()"
+            style="background-color: transparent; min-height: 56px;">
+            <mat-icon>arrow_back</mat-icon>
+            Go back
+            </button>
+        </div>
     </div>
 </section>
