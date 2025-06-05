@@ -40,13 +40,13 @@
 
                             <!-- Content details -->
                             <div class="flex-1">
-                                <div class="flex items-center">
-                                    <span class="text-lg font-semibold text-red-700">{{ content.title }}</span>
+                                <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+                                    <span class="text-lg font-semibold text-red-700 max-w-[10rem] truncate block" title="{{ content.title }}">{{ content.title }}</span>
                                     <!-- Content type badge -->
-                                    <span class="ml-2 text-xs bg-red-200 text-red-800 px-2 py-0.5 rounded"
+                                    <span class="text-xs bg-red-200 text-red-800 px-2 py-0.5 rounded"
                                           *ngIf="content.type">{{ content.type | titlecase }}</span>
                                     <!-- Release year -->
-                                    <span class="ml-2 text-xs text-gray-500"
+                                    <span class="text-xs text-gray-500"
                                           *ngIf="content.release_date">({{ content.release_date | date:'yyyy' }})</span>
                                 </div>
                                 <!-- Genres if available -->
@@ -77,7 +77,7 @@
                         class="font-bold px-8 py-3 rounded-lg border-2 border-red-600 text-red-700 hover:!bg-red-100 text-lg flex items-center justify-center cursor-pointer"
                         (click)="router.navigate(['/lists'])">
                     <mat-icon class="mr-2">arrow_back</mat-icon>
-                    Back to Lists
+                    Go back
                 </button>
             </div>
         </div>
