@@ -7,6 +7,7 @@
             <h1 class="!text-3xl !font-bold !text-primary">Add a new content</h1>
         </div>
         
+        <!-- Form -->
         <form [formGroup]="addContentForm" (ngSubmit)="addContentSubmit()" class="!space-y-6">
 
             <!-- Type radio buttons -->
@@ -37,6 +38,9 @@
                 <mat-error *ngIf="addContentForm.get('synopsis')?.hasError('required') && addContentForm.get('synopsis')?.touched">
                     Synopsis is required
                 </mat-error>
+                <mat-error *ngIf="addContentForm.get('synopsis')?.hasError('minlength') && addContentForm.get('synopsis')?.touched">
+                    Synopsis must be at least 10 characters long
+                </mat-error>
             </mat-form-field>
 
             <!-- Genres input -->
@@ -64,6 +68,9 @@
                 <mat-error *ngIf="addContentForm.get('duration')?.hasError('required') && addContentForm.get('duration')?.touched">
                     Duration is required
                 </mat-error>
+                <mat-error *ngIf="addContentForm.get('duration')?.hasError('pattern') && addContentForm.get('duration')?.touched">
+                    Duration must be a valid number (minutes)
+                </mat-error>
             </mat-form-field>
             
             <!-- Release date input -->
@@ -72,22 +79,31 @@
                 <input matInput [matDatepicker]="picker" formControlName="releaseDate" placeholder="YYYY-MM-DD">
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
+                <mat-error *ngIf="addContentForm.get('releaseDate')?.hasError('matDatepickerParse') && addContentForm.get('releaseDate')?.touched">
+                    Release date is not a valid date (YYYY-MM-DD)
+                </mat-error>
             </mat-form-field>
 
             <!-- Trailer URL input -->
             <mat-form-field appearance="fill" class="!w-full">
                 <mat-label class="!text-black">Trailer URL</mat-label>
                 <input matInput type="url" formControlName="trailerUrl" placeholder="https://youtube.com/...">
+                <mat-error *ngIf="addContentForm.get('trailerUrl')?.hasError('pattern') && addContentForm.get('trailerUrl')?.touched">
+                   The trailer URL must be a valid URL
+                </mat-error>
             </mat-form-field>
 
             <!-- Upload input -->
-            <span class="form-title">Upload a poster</span>
+            <span class="form-title">Upload a poster *</span>
             <p class="form-paragraph">File should be an image</p>
             <label for="file-input" class="drop-container !border-red-600 hover:!bg-red-50" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onDrop($event)" >
                 <span class="drop-title">Drop files here</span>
                 or
                 <input type="file" id="file-input" accept=".jpg,.jpeg,.png,.webp" (change)="onFileSelected($event)" class="">
             </label>
+            <div *ngIf="addContentForm.get('poster')?.value === null" class="!text-red-600 !text-sm !mt-2">
+                Poster image is required
+            </div>
 
             <!-- Add new content button -->
             <button mat-raised-button color="primary" type="submit"

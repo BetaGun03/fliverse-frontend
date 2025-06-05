@@ -10,6 +10,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { ContentService } from '../../services/content/content.service';
 
 @Component({
   selector: 'app-add-content',
@@ -22,14 +23,14 @@ export class AddContentComponent {
   loading: boolean = false
   addContentForm!: FormGroup
 
-  constructor(private fb: FormBuilder, private router: Router, private snackBar: MatSnackBar)
+  constructor(private fb: FormBuilder, private router: Router, private snackBar: MatSnackBar, public contentService: ContentService)
   {
     this.addContentForm = this.fb.group({
       title: ['', [ Validators.required ] ],
       synopsis: ['', [ Validators.required, Validators.minLength(10) ] ],
       type: ['Movie', [ Validators.required ] ],
       poster: [null, [ Validators.required ] ],
-      trailerUrl: [''],
+      trailerUrl: ['', [ Validators.pattern('https?://.+') ]],
       releaseDate: [''],
       duration: ['', [ Validators.required, Validators.pattern('^[0-9]+$') ] ],
       genre: ['', [ Validators.required ] ],
@@ -37,13 +38,57 @@ export class AddContentComponent {
     })
   }
 
-  /*async*/ addContentSubmit()
+  async addContentSubmit()
   {
     if(this.addContentForm.valid)
     {
-      console.log(this.addContentForm.value)
+      try{
+        this.loading = true
+        const formValue = this.addContentForm.value
+        const token = localStorage.getItem('token') || ""
+
+        // Create arrays from genre and keywords strings
+        const genreArray = formValue.genre.split(',').map((g: string) => g.trim()).filter((g: string) => g)
+        const keywordsArray = formValue.keywords.split(',').map((k: string) => k.trim()).filter((k: string) => k)
+
+        // Create a content object
+        const content = {
+          title: formValue.title,
+          type: formValue.type.toLowerCase(),
+          synopsis: formValue.synopsis,
+          trailer_url: formValue.trailerUrl,
+          release_date: formValue.releaseDate && formValue.releaseDate.format ? formValue.releaseDate.format('YYYY-MM-DD') : formValue.releaseDate,
+          duration: Number(formValue.duration),
+          genre: genreArray,
+          keywords: keywordsArray,
+          posterFile: formValue.poster
+        }
+
+        await this.contentService.addNewContentToBackend(content, token)
+
+        this.snackBar.open('Content added successfully!', 'Close', {
+          duration: 3000,
+          panelClass: ['success-snackbar']
+        })
+
+        this.router.navigate(['/'])
+      }
+      catch(error)
+      {
+        console.error('Error adding content:', error)
+        this.snackBar.open('Failed to add content. Please try again.', 'Close', {
+          duration: 3000,
+          panelClass: ['error-snackbar']
+        })
+      }
+      finally
+      {
+        this.loading = false
+      }
     }
     else{
+      this.addContentForm.markAllAsTouched()
+
       this.snackBar.open('Please fill out all required fields correctly.', 'Close', {
         duration: 3000,
         panelClass: ['error-snackbar']

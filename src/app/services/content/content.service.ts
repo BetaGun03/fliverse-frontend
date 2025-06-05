@@ -35,6 +35,85 @@ export class ContentService {
     this.watchedContents = this.watchedContents.filter(c => c.id !== content.id)
   }
 
+  // Add new content to the backend. It takes a Content object as parameter and returns a Promise of the added Content object
+  async addNewContentToBackend(content: Content, token: string): Promise<Content>
+  {
+    const url = `https://api.fliverse.es/contents`
+    const formData = new FormData()
+
+    formData.append('title', content.title)
+    formData.append('type', content.type)
+    formData.append('synopsis', content.synopsis)
+    formData.append('release_date', content.release_date instanceof Date ? content.release_date.toISOString().split('T')[0] : String(content.release_date))
+    
+    if (content.duration !== undefined) 
+    {
+      formData.append('duration', String(content.duration))
+    }
+
+    if(content.trailer_url && content.trailer_url.trim() !== '')
+    {
+      formData.append('trailer_url', content.trailer_url)
+    }
+
+    // Send each genre and keyword as a separate field
+    if (Array.isArray(content.genre)) 
+    {
+      content.genre.forEach(g => formData.append('genre', g))
+    }
+
+    if (Array.isArray(content.keywords)) 
+    {
+      content.keywords.forEach(k => formData.append('keywords', k))
+    }
+
+    // If posterFile exists, append it to the formData
+    if (content.posterFile) 
+    {
+      formData.append('poster', content.posterFile)
+    }
+
+    try {
+
+      const response = await axios.post(url, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+
+      if (response.status === 201) 
+      {
+        return response.data
+      } 
+      else 
+      {
+        throw new Error('Failed to add new content')
+      }
+
+    } catch (error: any) {
+      if (error.response) 
+      {
+        if (error.response.status === 400) 
+        {
+          throw new Error('Invalid input. Please check the content data.')
+        }
+        if (error.response.status === 401) 
+        {
+          throw new Error('Unauthorized. Please check your authentication token.')
+        }
+        if (error.response.status === 409) 
+        {
+          throw new Error('Content title already in use. Please choose a different title.')
+        }
+        if (error.response.status === 500) 
+        {
+          throw new Error('Internal server error. Please try again later.')
+        }
+      }
+      throw error
+    }
+  }
+
   // Get random contents from the API. It returns a Promise of an array of Content objects
   async getRandomContents(n: number, genres: string[], keywords: string[]): Promise<Content[]> 
   {
