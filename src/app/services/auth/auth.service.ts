@@ -13,6 +13,7 @@ export class AuthService {
 
   private user!: User
   private isLoggedIn: boolean = false
+  isHandlingSessionExpired: boolean = false // Flag to prevent multiple session expired handling
 
   constructor(private router: Router, public snackBar: MatSnackBar, private listService: ListService, private contentService: ContentService) 
   {
@@ -20,14 +21,28 @@ export class AuthService {
     axios.interceptors.response.use(
       response => response,
       error => {
-        if(error.response && error.response.status === 401 && ( error.response.data?.message === 'Token expired' || error.response.data?.message === 'Invalid token' || error.response.data?.message === 'Session terminated. Please log in again.' || error.response.data?.message === 'Authorization header missing' || error.response.data?.message === 'Invalid authorization format' || error.response.data?.message === 'Unauthorized' ))
+        if ( error.response && error.response.status === 401 && ( error.response.data?.message === 'Token expired' || error.response.data?.message === 'Invalid token' || error.response.data?.message === 'Session terminated. Please log in again.' || error.response.data?.message === 'Authorization header missing' || error.response.data?.message === 'Invalid authorization format' || error.response.data?.message === 'Unauthorized')) 
         {
-          console.log('Session expired or invalid token. Logging out...')
-          this.snackBar.open('Session expired. Please log in again.', 'Close', {
-            duration: 5000,
-          })
-          this.logout()
-          this.router.navigate(['/login'])
+          // Only handle session expiration once until navigation is complete
+          if (!this.isHandlingSessionExpired) 
+          {
+            this.isHandlingSessionExpired = true
+
+            console.log('Session expired or invalid token. Logging out...')
+
+            this.snackBar.open('Session expired. Please log in again.', 'Close', {
+              duration: 5000,
+            })
+
+            this.logout().then(() => {
+              this.router.navigate(['/login']).then(() => {
+                
+                // Reset the flag after navigation so future logouts can occur
+                this.isHandlingSessionExpired = false
+              })
+            })
+          }
+          return Promise.reject(error)
         }
         return Promise.reject(error)
       }
