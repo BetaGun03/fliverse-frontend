@@ -1,1 +1,56 @@
-<p>search works!</p>
+<div class="px-4 sm:px-8 pb-8">
+  <h1 class="text-5xl font-bold mt-6 text-primary">Search</h1>
+  <div
+    class="grid gap-8 mt-6"
+    [ngClass]="{
+      'grid-cols-1': true,
+      'sm:grid-cols-2': true,
+      'md:grid-cols-3': true,
+      'lg:grid-cols-4': true,
+      'xl:grid-cols-5': true
+    }"
+  >
+    <!-- Message if no results -->
+    <div *ngIf="noResults" class="col-span-full text-center text-xl text-gray-500 py-12">
+        No results found for "{{ titleFromQuery }}". Please try a different search term.
+    </div>
+
+    <!-- Search Results: Show when not loading and not noResults -->
+    <ng-container *ngIf="!isLoading && !noResults">
+      <mat-card
+        *ngFor="let content of contents; let i = index"
+        [id]="'sliderContent' + content.id"
+        class="!cursor-pointer !p-4 !shadow-md !bg-red-50 !border-2 !border-red-100 transition-transform hover:scale-105 hover:!shadow-lg hover:!border-red-300 hover:!border-4"
+      >
+        <!-- Content Poster -->
+        <div class="w-full aspect-[2/3] overflow-hidden flex items-center justify-center">
+          <img
+            (click)="goToContent(content)"
+            mat-card-image
+            [src]="content.poster"
+            alt="{{ content.title }}"
+            class="!w-full !h-full !object-cover !rounded-md"
+          />
+        </div>
+        <mat-card-content class="!px-1 !py-0">
+          <!-- Content Title -->
+          <h3 class="!text-2xl !font-semibold !text-primary truncate break-words max-w-full" style="word-break: break-word; overflow-wrap: anywhere;">{{ content.title }}</h3>
+          <!-- Content Details -->
+          <div class="flex items-center justify-between mt-2">
+            <p class="!text-gray-600 text-md">{{ content.duration }} min</p>
+            <p class="!text-gray-600 text-md ml-4">{{ content.release_date | date:"yyyy" }}</p>
+          </div>
+          <!-- Content Type -->
+          <p class="!mt-4 !font-bold p-2 rounded-xl text-center bg-red-700 text-white">{{ content.type | titlecase }}</p>
+        </mat-card-content>
+      </mat-card>
+    </ng-container>
+    <!-- Skeleton Loader -->
+    <ng-template #skeletonCardsRandom>
+      <app-card *ngFor="let _ of skeletonArray"></app-card>
+    </ng-template>
+    <ng-container *ngIf="isLoading && !noResults">
+      <ng-container *ngTemplateOutlet="skeletonCardsRandom"></ng-container>
+    </ng-container>
+  </div>
+</div>

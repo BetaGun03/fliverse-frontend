@@ -10,6 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth/auth.service';
+import { ContentService } from '../../services/content/content.service';
 
 @Component({
   selector: 'app-header',
@@ -22,29 +23,101 @@ export class HeaderComponent {
   searchTerm: string = ''
   selectedFilter: string = 'both'
 
-  constructor(private router: Router, public auth: AuthService) {}
+  constructor(private router: Router, public auth: AuthService, public contentService: ContentService) {}
 
   logout()
   {
     this.auth.logout()
   }
 
-  onSearch() 
+  async onSearch() 
   {
     const query = this.searchTerm.trim()
+
     if (query) 
     {
-      // Por ejemplo, navegar a /search?q=...
-      this.router.navigate(['/search'], { queryParams: { q: query } })
+      // If movies filter is selected
+      if(this.selectedFilter === 'movies') 
+      {
+        try{
+          const movies = await this.contentService.searchContentsByTitle(localStorage.getItem('token') || '', query, [], [], undefined, undefined, undefined, "movie", undefined, undefined, undefined, undefined, undefined)
+          
+          if(movies.contents.length === 0)
+          {
+            this.router.navigate(['/search'], {
+              queryParams: { title: query, type: 'movies' }, state: { contents: []  }
+            })
+          }
+          else{
+            this.router.navigate(['/search'], { 
+              queryParams: { title: query, type: 'movies' }, 
+              state: { contents: movies }
+            })
+          }
+        }
+        catch(e){
+          console.error('Error occurred while searching:', e)
+        }
+      }
+      // If series filter is selected
+      else if(this.selectedFilter === 'series')
+      {
+        try{
+          const series = await this.contentService.searchContentsByTitle(localStorage.getItem('token') || '', query, [], [], undefined, undefined, undefined, "series", undefined, undefined, undefined, undefined, undefined)
+
+          if(series.contents.length === 0)
+          {
+            this.router.navigate(['/search'], {
+              queryParams: { title: query, type: 'series' }, state: { contents: []  }
+            })
+          }
+          else
+          {
+            this.router.navigate(['/search'], { 
+              queryParams: { title: query, type: 'series' }, 
+              state: { contents: series }
+            })
+          }
+        }
+        catch(e){
+          console.error('Error occurred while searching:', e)
+        }
+      }
+      // If both movies and series filters are selected
+      else if(this.selectedFilter === 'both')
+      {
+        try{
+          const contents = await this.contentService.searchContentsByTitle(localStorage.getItem('token') || '', query, [], [], undefined, undefined, undefined, "", undefined, undefined, undefined, undefined, undefined)
+
+          if(contents.contents.length === 0)
+          {
+            this.router.navigate(['/search'], {
+              queryParams: { title: query }, state: { contents: []  }
+            })
+          }
+          else
+          {
+            this.router.navigate(['/search'], { 
+              queryParams: { title: query }, 
+              state: { contents }
+            })
+          }
+        }
+        catch(e){
+          console.error('Error occurred while searching:', e)
+        }
+      }
+
+      // Reset the search term and selected filter after navigation
+      this.searchTerm = ''
+      this.selectedFilter = 'both'
     }
   }
 
+  // Function to handle filter selection. It updates the selectedFilter property.
   onFilterSelect(filter: string) 
   {
-    this.selectedFilter = filter;
-    // Aquí puedes hacer lo que necesites con el filtro seleccionado
-    // Por ejemplo, lanzar una búsqueda automática, emitir un evento, etc.
-    // console.log('Filtro seleccionado:', filter);
+    this.selectedFilter = filter
   }
 
 }

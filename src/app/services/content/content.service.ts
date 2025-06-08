@@ -293,7 +293,7 @@ export class ContentService {
   }
 
   // Search contents by title from the API. It returns a Promise of an array of Content objects. It uses filtering to match the title
-  async searchContentsByTitle(title: string, token: string, genre?: string[], keywords?: string[], release_date?: Date, release_date_from?: Date, release_date_to?: Date, type?: string, duration?: number, duration_min?: number, duration_max?: number, page?: number, limit?: number): Promise<{ contents: Content[], total: number, page: number, limit: number }>
+  async searchContentsByTitle(token: string, title: string, genre?: string[], keywords?: string[], release_date?: Date, release_date_from?: Date, release_date_to?: Date, type?: string, duration?: number, duration_min?: number, duration_max?: number, page?: number, limit?: number): Promise<{ contents: Content[], total: number, page: number, limit: number }>
   {
     let url = `https://api.fliverse.es/contents/searchByTitle`
 
@@ -326,25 +326,25 @@ export class ContentService {
     }
 
     // Add release_date to the url if provided
-    if (release_date) 
+    if (release_date && release_date !== undefined) 
     {
       url += `&release_date=${release_date.toISOString().split('T')[0]}`
     }
 
     // Add release_date_from to the url if provided
-    if (release_date_from) 
+    if (release_date_from && release_date_from !== undefined) 
     {
       url += `&release_date_from=${release_date_from.toISOString().split('T')[0]}`
     }
 
     // Add release_date_to to the url if provided
-    if (release_date_to) 
+    if (release_date_to && release_date_to !== undefined) 
     {
       url += `&release_date_to=${release_date_to.toISOString().split('T')[0]}`
     }
 
     // Add type to the url if provided
-    if (type && (type.toLowerCase() == 'series' || type.toLowerCase() == 'movie')) 
+    if (type && (type.toLowerCase() == 'series' || type.toLowerCase() == 'movie') && type.trim() !== '')
     {
       url += `&type=${encodeURIComponent(type.toLowerCase())}`
     }
@@ -398,7 +398,6 @@ export class ContentService {
           trailer_url: content.trailer_url,
           release_date: new Date(content.release_date),
           duration: content.duration,
-          average_rating: content.average_rating,
           genre: content.genre,
           keywords: content.keywords
         }))
