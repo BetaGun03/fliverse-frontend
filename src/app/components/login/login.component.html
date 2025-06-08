@@ -33,7 +33,7 @@
 
             <!-- Login button -->
             <button mat-raised-button color="primary" type="submit"
-                class="!w-full !flex !justify-center !items-center !text-white !bg-red-600 hover:!bg-red-700 !focus:ring-4 !focus:outline-none !focus:ring-red-300 !font-bold !rounded-lg !text-base !px-5 !py-2.5 !text-center !transition"
+                class="!w-full !flex !justify-center !items-center !text-white !bg-red-600 hover:!bg-red-700 !focus:ring-4 !focus:outline-none !focus:ring-red-300 !font-bold !rounded-lg !text-base !px-5 !py-2.5 !text-center !transition !disabled:!opacity-50 !disabled:!cursor-not-allowed"
                 style="background-color: #dc2626;"
                 [disabled]="loading">
                 <ng-container *ngIf="!loading; else loadingTpl">Enter</ng-container>

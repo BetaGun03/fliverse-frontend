@@ -292,6 +292,141 @@ export class ContentService {
     }
   }
 
+  // Search contents by title from the API. It returns a Promise of an array of Content objects. It uses filtering to match the title
+  async searchContentsByTitle(title: string, token: string, genre?: string[], keywords?: string[], release_date?: Date, release_date_from?: Date, release_date_to?: Date, type?: string, duration?: number, duration_min?: number, duration_max?: number, page?: number, limit?: number): Promise<{ contents: Content[], total: number, page: number, limit: number }>
+  {
+    let url = `https://api.fliverse.es/contents/searchByTitle`
+
+    // If the token is not provided, throw an error
+    if (!token || token.trim() === '') 
+    {
+      throw new Error('Token is required to search contents by title.')
+    }
+
+    // Add the title to the url
+    if (title && title.trim() !== '') 
+    {
+      url += `?title=${encodeURIComponent(title.trim())}`
+    } 
+    else 
+    {
+      return { contents: [], total: 0, page: 0, limit: 0 }
+    }
+
+    // Add genre to the url if provided
+    if (genre && genre.length > 0) 
+    {
+      url += `&genre=${genre.join(',')}`
+    }
+
+    // Add keywords to the url if provided
+    if (keywords && keywords.length > 0) 
+    {
+      url += `&keywords=${keywords.join(',')}`
+    }
+
+    // Add release_date to the url if provided
+    if (release_date) 
+    {
+      url += `&release_date=${release_date.toISOString().split('T')[0]}`
+    }
+
+    // Add release_date_from to the url if provided
+    if (release_date_from) 
+    {
+      url += `&release_date_from=${release_date_from.toISOString().split('T')[0]}`
+    }
+
+    // Add release_date_to to the url if provided
+    if (release_date_to) 
+    {
+      url += `&release_date_to=${release_date_to.toISOString().split('T')[0]}`
+    }
+
+    // Add type to the url if provided
+    if (type && (type.toLowerCase() == 'series' || type.toLowerCase() == 'movie')) 
+    {
+      url += `&type=${encodeURIComponent(type.toLowerCase())}`
+    }
+
+    // Add duration to the url if provided
+    if (duration !== undefined && duration !== null) 
+    {
+      url += `&duration=${duration}`
+    }
+
+    // Add duration_min to the url if provided
+    if (duration_min !== undefined && duration_min !== null) 
+    {
+      url += `&duration_min=${duration_min}`
+    }
+
+    // Add duration_max to the url if provided
+    if (duration_max !== undefined && duration_max !== null) 
+    {
+      url += `&duration_max=${duration_max}`
+    }
+
+    // Add page to the url if provided
+    if (page !== undefined && page !== null) 
+    {
+      url += `&page=${page}`
+    }
+
+    // Add limit to the url if provided
+    if (limit !== undefined && limit !== null) 
+    {
+      url += `&limit=${limit}`
+    }
+
+    // Get the contents from the API
+    try {
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+
+      if (response.status === 200 && response.data && Array.isArray(response.data.results)) 
+      {
+        const contents: Content[] = response.data.results.map((content: any) => ({
+          id: content.id,
+          title: content.title,
+          type: content.type,
+          synopsis: content.synopsis,
+          poster: content.poster,
+          trailer_url: content.trailer_url,
+          release_date: new Date(content.release_date),
+          duration: content.duration,
+          average_rating: content.average_rating,
+          genre: content.genre,
+          keywords: content.keywords
+        }))
+        return {
+          contents,
+          total: response.data.total,
+          page: response.data.page,
+          limit: response.data.limit
+        }
+      } 
+      else 
+      {
+        return { contents: [], total: 0, page: 1, limit: 10 }
+      }
+    } 
+    catch (error: any) {
+      // If the API returns a 404 error, return an empty array and total of 0
+      if (error.response && error.response.status === 404) 
+      {
+        return { contents: [], total: 0, page: page || 1, limit: limit || 10 }
+      }
+
+      // If there is any other error, log it to the console and return an empty array and total of 0
+      console.error('Error fetching contents by title:', error)
+      return { contents: [], total: 0, page: page || 1, limit: limit || 10 }
+    }
+}
+
   // Get content rating by ID from the API. It returns a Promise of a number
   async getContentAverageRatingById(contentId: string): Promise<number>
   {
