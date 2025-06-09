@@ -8,7 +8,7 @@ export const authGuard: CanActivateFn = (route, state) => {
   const router = inject(Router)
   const snackBar = inject(MatSnackBar)
 
-  if (authService.isAuthenticated() && localStorage.getItem('token') !== undefined && localStorage.getItem('token') !== null)
+  if (authService.isAuthenticated() && authService.getToken() !== undefined && authService.getToken() !== null)
   {
     return true
   }
@@ -20,7 +20,7 @@ export const authMatchGuard: CanMatchFn = (route: Route, segments: UrlSegment[])
   const authService = inject(AuthService)
   const router = inject(Router)
 
-  if (authService.isAuthenticated() && localStorage.getItem('token') !== undefined && localStorage.getItem('token') !== null) 
+  if (authService.isAuthenticated() && authService.getToken() !== undefined && authService.getToken() !== null)
   {
     return true
   }
