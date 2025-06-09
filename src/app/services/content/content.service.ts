@@ -293,15 +293,9 @@ export class ContentService {
   }
 
   // Search contents by title from the API. It returns a Promise of an array of Content objects. It uses filtering to match the title
-  async searchContentsByTitle(token: string, title: string, genre?: string[], keywords?: string[], release_date?: Date, release_date_from?: Date, release_date_to?: Date, type?: string, duration?: number, duration_min?: number, duration_max?: number, page?: number, limit?: number): Promise<{ contents: Content[], total: number, page: number, limit: number }>
+  async searchContentsByTitle(title: string, genre?: string[], keywords?: string[], release_date?: Date, release_date_from?: Date, release_date_to?: Date, type?: string, duration?: number, duration_min?: number, duration_max?: number, page?: number, limit?: number): Promise<{ contents: Content[], total: number, page: number, limit: number }>
   {
     let url = `https://api.fliverse.es/contents/searchByTitle`
-
-    // If the token is not provided, throw an error
-    if (!token || token.trim() === '') 
-    {
-      throw new Error('Token is required to search contents by title.')
-    }
 
     // Add the title to the url
     if (title && title.trim() !== '') 
@@ -381,11 +375,7 @@ export class ContentService {
 
     // Get the contents from the API
     try {
-      const response = await axios.get(url, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
+      const response = await axios.get(url)
 
       if (response.status === 200 && response.data && Array.isArray(response.data.results)) 
       {

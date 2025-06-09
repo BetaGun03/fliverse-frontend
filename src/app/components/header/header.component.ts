@@ -22,8 +22,14 @@ export class HeaderComponent {
 
   searchTerm: string = ''
   selectedFilter: string = 'both'
+  isSearchRoute: boolean = false
 
-  constructor(private router: Router, public auth: AuthService, public contentService: ContentService) {}
+  constructor(private router: Router, public auth: AuthService, public contentService: ContentService) 
+  {
+    this.router.events.subscribe(() => {
+      this.isSearchRoute = this.router.url.startsWith('/search')
+    })
+  }
 
   logout()
   {
@@ -40,7 +46,7 @@ export class HeaderComponent {
       if(this.selectedFilter === 'movies') 
       {
         try{
-          const movies = await this.contentService.searchContentsByTitle(localStorage.getItem('token') || '', query, [], [], undefined, undefined, undefined, "movie", undefined, undefined, undefined, undefined, undefined)
+          const movies = await this.contentService.searchContentsByTitle(query, [], [], undefined, undefined, undefined, "movie", undefined, undefined, undefined, undefined, undefined)
           
           if(movies.contents.length === 0)
           {
@@ -63,7 +69,7 @@ export class HeaderComponent {
       else if(this.selectedFilter === 'series')
       {
         try{
-          const series = await this.contentService.searchContentsByTitle(localStorage.getItem('token') || '', query, [], [], undefined, undefined, undefined, "series", undefined, undefined, undefined, undefined, undefined)
+          const series = await this.contentService.searchContentsByTitle(query, [], [], undefined, undefined, undefined, "series", undefined, undefined, undefined, undefined, undefined)
 
           if(series.contents.length === 0)
           {
@@ -87,7 +93,7 @@ export class HeaderComponent {
       else if(this.selectedFilter === 'both')
       {
         try{
-          const contents = await this.contentService.searchContentsByTitle(localStorage.getItem('token') || '', query, [], [], undefined, undefined, undefined, "", undefined, undefined, undefined, undefined, undefined)
+          const contents = await this.contentService.searchContentsByTitle(query, [], [], undefined, undefined, undefined, "", undefined, undefined, undefined, undefined, undefined)
 
           if(contents.contents.length === 0)
           {

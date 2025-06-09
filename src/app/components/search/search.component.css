@@ -1,0 +1,6 @@
+.chip-selected-bg {
+  background-color: #fecaca !important; /* Tailwind bg-red-200 */
+}
+.chip-selected-text {
+  color: #fff !important;
+}

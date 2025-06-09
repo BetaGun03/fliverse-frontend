@@ -1,56 +1,230 @@
-<div class="px-4 sm:px-8 pb-8">
-  <h1 class="text-5xl font-bold mt-6 text-primary">Search</h1>
-  <div
-    class="grid gap-8 mt-6"
-    [ngClass]="{
-      'grid-cols-1': true,
-      'sm:grid-cols-2': true,
-      'md:grid-cols-3': true,
-      'lg:grid-cols-4': true,
-      'xl:grid-cols-5': true
-    }"
-  >
-    <!-- Message if no results -->
-    <div *ngIf="noResults" class="col-span-full text-center text-xl text-gray-500 py-12">
-        No results found for "{{ titleFromQuery }}". Please try a different search term.
-    </div>
+<mat-drawer-container class="fixed inset-0 h-screen w-full z-50" autosize>
+  <!-- Side drawer for filters -->
+  <mat-drawer #drawer mode="side" position="end" class="!w-80 !h-full !p-6 relative" [opened]="false">
 
-    <!-- Search Results: Show when not loading and not noResults -->
-    <ng-container *ngIf="!isLoading && !noResults">
-      <mat-card
-        *ngFor="let content of contents; let i = index"
-        [id]="'sliderContent' + content.id"
-        class="!cursor-pointer !p-4 !shadow-md !bg-red-50 !border-2 !border-red-100 transition-transform hover:scale-105 hover:!shadow-lg hover:!border-red-300 hover:!border-4"
-      >
-        <!-- Content Poster -->
-        <div class="w-full aspect-[2/3] overflow-hidden flex items-center justify-center">
-          <img
-            (click)="goToContent(content)"
-            mat-card-image
-            [src]="content.poster"
-            alt="{{ content.title }}"
-            class="!w-full !h-full !object-cover !rounded-md"
+    <!-- Close button only visible on small screens and only when the drawer is open -->
+    <button
+      mat-icon-button
+      color="primary"
+      class="absolute top-2 right-2 sm:hidden hover:!text-primary"
+      *ngIf="drawer.opened"
+      (click)="drawer.close()"
+      aria-label="Close filters"
+    >
+      <mat-icon class="!mb-4 !scale-125">close</mat-icon>
+    </button>
+    <h2 class="text-2xl font-bold mb-4 text-primary">Filters</h2>
+    <form>
+      <!-- Type -->
+      <div class="w-full mb-4">
+        <label class="block mb-2 font-medium text-gray-700">Type</label>
+        <mat-chip-listbox [multiple]="true">
+          <mat-chip-option
+            *ngFor="let type of availableTypes"
+            [selected]="selectedTypes.includes(type)"
+            (click)="toggleType(type)"
+            [ngClass]="{
+              'chip-selected-bg chip-selected-text': selectedTypes.includes(type)
+            }"
+          >
+            {{ type | titlecase }}
+          </mat-chip-option>
+        </mat-chip-listbox>
+      </div>
+
+      <!-- Release Date From -->
+      <div class="w-full mb-4">
+        <label class="block mb-2 font-medium text-gray-700">Release Date From</label>
+        <mat-form-field
+          appearance="outline"
+          class="w-full"
+          style="
+             --mdc-outlined-text-field-focus-outline-color: #dc2626 !important;
+          "
+        >
+          <input
+            matInput
+            [matDatepicker]="pickerFrom"
+            placeholder="Choose a date"
+            [(ngModel)]="filters.releaseDateFrom"
+            name="releaseDateFrom"
+            [ngModelOptions]="{standalone: true}"
           />
+          <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+          <mat-datepicker #pickerFrom></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <!-- Release Date To -->
+      <div class="w-full mb-4">
+        <label class="block mb-2 font-medium text-gray-700">Release Date To</label>
+        <mat-form-field
+          appearance="outline"
+          class="w-full"
+          style="
+            --mdc-outlined-text-field-focus-outline-color: #dc2626 !important;
+          "
+        >
+          <input
+            matInput
+            [matDatepicker]="pickerTo"
+            placeholder="Choose a date"
+            [(ngModel)]="filters.releaseDateTo"
+            name="releaseDateTo"
+            [ngModelOptions]="{standalone: true}"
+          />
+          <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
+          <mat-datepicker #pickerTo></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <!-- Genres -->
+      <div class="w-full mb-4">
+        <label class="block mb-2 font-medium text-gray-700">Genres</label>
+        <mat-chip-listbox [multiple]="true">
+          <mat-chip-option
+            *ngFor="let genre of availableGenres"
+            [selected]="selectedGenres.includes(genre)"
+            (click)="toggleGenre(genre)"
+            [ngClass]="{
+              'chip-selected-bg chip-selected-text': selectedGenres.includes(genre)
+            }"
+          >
+            {{ genre }}
+          </mat-chip-option>
+        </mat-chip-listbox>
+      </div>
+
+      <!-- Duration Min -->
+      <div class="w-full mb-4">
+        <label class="block mb-2 font-medium text-gray-700">Duration Min (minutes)</label>
+        <input
+          type="number"
+          min="0"
+          class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-red-600"
+          [(ngModel)]="filters.durationMin"
+          name="durationMin"
+          [ngModelOptions]="{standalone: true}"
+        />
+      </div>
+
+      <!-- Duration Max -->
+      <div class="w-full mb-4">
+        <label class="block mb-2 font-medium text-gray-700">Duration Max (minutes)</label>
+        <input
+          type="number"
+          min="0"
+          class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-red-600"
+          [(ngModel)]="filters.durationMax"
+          name="durationMax"
+          [ngModelOptions]="{standalone: true}"
+        />
+      </div>
+
+      <button mat-raised-button color="primary" class="w-full mt-4 !text-primary hover:!bg-red-50 !transition-colors" (click)="applyFilters()">Apply filters</button>
+    </form>
+  </mat-drawer>
+
+  <!-- Main content -->
+  <div mat-drawer-content class="h-full overflow-auto">
+    <div class="px-4 sm:px-8 pb-8">
+      <div class="flex items-center justify-between">
+        <h1 class="text-5xl font-bold mt-6 text-primary">Search</h1>
+        <!-- Open button only visible on large screens and when the drawer is closed -->
+        <button
+          mat-icon-button
+          color="primary"
+          (click)="drawer.toggle()"
+          aria-label="Open filters"
+          class="!hidden sm:!inline-flex hover:!text-primary"
+          *ngIf="!drawer.opened"
+        >
+          <mat-icon>filter_list</mat-icon>
+        </button>
+        <!-- Open button only visible on small screens and when the drawer is closed -->
+        <button
+          mat-icon-button
+          color="primary"
+          (click)="drawer.toggle()"
+          aria-label="Open filters"
+          class="sm:!hidden"
+          *ngIf="!drawer.opened"
+        >
+          <mat-icon>filter_list</mat-icon>
+        </button>
+      </div>
+
+      <!-- Search bar -->
+      <form class="flex items-center gap-4 mt-6 mb-4" (ngSubmit)="onSearch()">
+        <input
+          type="text"
+          [(ngModel)]="searchInput"
+          name="searchInput"
+          placeholder="Search by title..."
+          class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 hover:border-black hover:bg-gray-100 focus:ring-red-600 focus:border-red-100 hover:text-primary transition-colors duration-100"
+          autocomplete="off"
+        />
+        <button
+          type="submit"
+          class="px-6 py-2 bg-red-700 text-white rounded-lg font-semibold hover:bg-red-800 transition cursor-pointer"
+        >
+          Search
+        </button>
+      </form>
+      
+      <div
+        class="grid gap-8 mt-6"
+        [ngClass]="{
+          'grid-cols-1': true,
+          'sm:grid-cols-2': true,
+          'md:grid-cols-3': true,
+          'lg:grid-cols-4': true,
+          'xl:grid-cols-5': true
+        }"
+      >
+        <!-- Message if no results -->
+        <div *ngIf="noResults" class="col-span-full text-center text-xl text-gray-500 py-8">
+            No results found for "{{ titleFromQuery }}". Please try a different search term.
         </div>
-        <mat-card-content class="!px-1 !py-0">
-          <!-- Content Title -->
-          <h3 class="!text-2xl !font-semibold !text-primary truncate break-words max-w-full" style="word-break: break-word; overflow-wrap: anywhere;">{{ content.title }}</h3>
-          <!-- Content Details -->
-          <div class="flex items-center justify-between mt-2">
-            <p class="!text-gray-600 text-md">{{ content.duration }} min</p>
-            <p class="!text-gray-600 text-md ml-4">{{ content.release_date | date:"yyyy" }}</p>
-          </div>
-          <!-- Content Type -->
-          <p class="!mt-4 !font-bold p-2 rounded-xl text-center bg-red-700 text-white">{{ content.type | titlecase }}</p>
-        </mat-card-content>
-      </mat-card>
-    </ng-container>
-    <!-- Skeleton Loader -->
-    <ng-template #skeletonCardsRandom>
-      <app-card *ngFor="let _ of skeletonArray"></app-card>
-    </ng-template>
-    <ng-container *ngIf="isLoading && !noResults">
-      <ng-container *ngTemplateOutlet="skeletonCardsRandom"></ng-container>
-    </ng-container>
+
+        <!-- Search Results: Show when not loading and not noResults -->
+        <ng-container *ngIf="!isLoading && !noResults">
+          <mat-card
+            *ngFor="let content of contents; let i = index"
+            [id]="'sliderContent' + content.id"
+            class="!cursor-pointer !p-4 !shadow-md !bg-red-50 !border-2 !border-red-100 transition-transform hover:scale-105 hover:!shadow-lg hover:!border-red-300 hover:!border-4"
+          >
+            <!-- Content Poster -->
+            <div class="w-full aspect-[2/3] overflow-hidden flex items-center justify-center">
+              <img
+                (click)="goToContent(content)"
+                mat-card-image
+                [src]="content.poster"
+                alt="{{ content.title }}"
+                class="!w-full !h-full !object-cover !rounded-md"
+              />
+            </div>
+            <mat-card-content class="!px-1 !py-0">
+              <!-- Content Title -->
+              <h3 class="!text-2xl !font-semibold !text-primary truncate break-words max-w-full" style="word-break: break-word; overflow-wrap: anywhere;">{{ content.title }}</h3>
+              <!-- Content Details -->
+              <div class="flex items-center justify-between mt-2">
+                <p class="!text-gray-600 text-md">{{ content.duration }} min</p>
+                <p class="!text-gray-600 text-md ml-4">{{ content.release_date | date:"yyyy" }}</p>
+              </div>
+              <!-- Content Type -->
+              <p class="!mt-4 !font-bold p-2 rounded-xl text-center bg-red-700 text-white">{{ content.type | titlecase }}</p>
+            </mat-card-content>
+          </mat-card>
+        </ng-container>
+        <!-- Skeleton Loader -->
+        <ng-template #skeletonCardsRandom>
+          <app-card *ngFor="let _ of skeletonArray"></app-card>
+        </ng-template>
+        <ng-container *ngIf="isLoading && !noResults">
+          <ng-container *ngTemplateOutlet="skeletonCardsRandom"></ng-container>
+        </ng-container>
+      </div>
+    </div>
   </div>
-</div>
+</mat-drawer-container>
