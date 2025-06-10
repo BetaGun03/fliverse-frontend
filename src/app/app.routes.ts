@@ -17,5 +17,6 @@ export const routes: Routes = [
     { path: "user", loadComponent: () => import('./components/user-info/user-info.component').then(m => m.UserInfoComponent), canActivate: [authGuard], canMatch: [authGuard] },
     { path: "watched", loadComponent: () => import('./components/watched/watched.component').then(m => m.WatchedComponent), canActivate: [authGuard], canMatch: [authGuard] },
     { path: "addcontent", loadComponent: () => import('./components/add-content/add-content.component').then(m => m.AddContentComponent), canActivate: [authGuard], canMatch: [authGuard] },
-    { path: "search", loadComponent: () => import('./components/search/search.component').then(m => m.SearchComponent) }
+    { path: "search", loadComponent: () => import('./components/search/search.component').then(m => m.SearchComponent) },
+    { path: "help", loadComponent: () => import('./components/help/help.component').then(m => m.HelpComponent) }
 ];
