@@ -66,12 +66,20 @@ export class SearchComponent {
   availableTypes: string[] = ['movie', 'series', 'all']
   selectedTypes: string[] = ["all"]
 
-  availableGenres: string[] = [
-    'Action', 'Comedy', 'Drama', 'Fantasy', 'Horror', 'Romance', 'Sci-Fi', 'Thriller'
-  ]
+  availableGenres: string[] = []
   selectedGenres: string[] = []
 
-  constructor(private contentService: ContentService, private router: Router, private route: ActivatedRoute) {}
+  constructor(private contentService: ContentService, private router: Router, private route: ActivatedRoute) 
+  {
+    this.contentService.getContentGenres()
+      .then(genres => {
+        this.availableGenres = genres
+      })
+      .catch(error => {
+        this.availableGenres = []
+        console.error('Error fetching content genres:', error)
+      })
+  }
 
   ngOnInit() 
   {

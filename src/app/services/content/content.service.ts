@@ -8,6 +8,7 @@ import axios from 'axios';
 export class ContentService {
 
   private watchedContents: Content[] = []
+  public contentGenres: string[] = []
   
   constructor() { }
 
@@ -33,6 +34,35 @@ export class ContentService {
   removeWatchedContent(content: Content): void
   {
     this.watchedContents = this.watchedContents.filter(c => c.id !== content.id)
+  }
+
+  // Get content genres from the api. It returns an array of strings
+  async getContentGenres(): Promise<string[]>
+  {
+    const url = `https://api.fliverse.es/contents/genres`
+
+    try {
+      const response = await axios.get(url)
+
+      if (response.status === 200 && Array.isArray(response.data.genres)) 
+      {
+        this.contentGenres = response.data.genres
+        return this.contentGenres
+      } 
+      else 
+      {
+        return []
+      }
+    } catch (error) {
+      if(axios.isAxiosError(error) && error.response && error.response.status === 404)
+      {
+        // If the API returns a 404 error (no genres found), return an empty array
+        this.contentGenres = []
+        return []
+      }
+      console.error('Error fetching content genres:', error)
+      return []
+    }
   }
 
   // Add new content to the backend. It takes a Content object as parameter and returns a Promise of the added Content object
