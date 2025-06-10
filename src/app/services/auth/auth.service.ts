@@ -224,6 +224,7 @@ export class AuthService {
       this.isLoggedIn = false
       this.listService.setLists([]) // Clear user lists
       this.contentService.setWatchedContents([]) // Clear user watched contents
+      this.router.navigate(['/']) // Redirect to home page
     } catch (error) {
       console.error("Logout failed:", error)
     }
@@ -247,6 +248,7 @@ export class AuthService {
       this.isLoggedIn = false
       this.listService.setLists([]) // Clear user lists
       this.contentService.setWatchedContents([]) // Clear user watched contents
+      this.router.navigate(['/']) // Redirect to home page
     } catch (error) {
       console.error("Logout failed:", error)
     }
