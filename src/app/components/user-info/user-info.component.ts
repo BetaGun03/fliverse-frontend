@@ -22,9 +22,11 @@ export class UserInfoComponent {
   isLoggingOutAll: boolean = false
   isChangingInfo: boolean = false
   isLoading: boolean = true
+  isDeleting: boolean = false
   editForm!: FormGroup
   showEditForm: boolean = false
   selectedProfilePicName: string | null = null
+  showDeleteConfirm: boolean = false
 
   constructor(public authService: AuthService, public location: Location, public router: Router, private fb: FormBuilder, public snackBar: MatSnackBar, public listService: ListService, private contentService: ContentService)
   {
@@ -216,6 +218,28 @@ export class UserInfoComponent {
   goBack() 
   {
     this.location.back()
+  }
+
+  deleteUser()
+  {
+    this.isDeleting = true
+
+    this.authService.deleteUser()
+    .then(() => {
+      this.router.navigate(['/'])
+      this.snackBar.open('User account deleted successfully.', 'Close', {
+        duration: 3000
+      })
+    })
+    .catch(error => {
+      console.error('Error deleting user account:', error)
+      this.snackBar.open('Error deleting user account. Please try again.', 'Close', {
+        duration: 3000
+      })
+    })
+    .finally(() => {
+      this.isDeleting = false
+    })
   }
 
 }

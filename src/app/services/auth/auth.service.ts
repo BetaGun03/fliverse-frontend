@@ -196,7 +196,7 @@ export class AuthService {
         name: response.data.name,
         birthdate: response.data.birthdate ? new Date(response.data.birthdate) : undefined,
         profilePic: response.data.profile_pic,
-        token: localStorage.getItem('token') || ''
+        token: this.getToken() || "",
       }
     } 
     else 
@@ -348,5 +348,26 @@ export class AuthService {
   isAuthenticated(): boolean
   {
     return this.isLoggedIn
+  }
+
+  async deleteUser(): Promise<void>
+  {
+    const url = "https://api.fliverse.es/users/me"
+
+    try{
+      await axios.delete(url, {
+        headers: {
+          'Authorization': `Bearer ${this.getToken()}`
+        }
+      })
+
+      localStorage.removeItem('token') // Remove token from local storage
+      this.user = {} as User // Clear user object
+      this.isLoggedIn = false
+      this.listService.setLists([]) // Clear user lists
+      this.contentService.setWatchedContents([]) // Clear user watched contents
+    } catch (error) {
+      console.error("Failed to delete user:", error)
+    }
   }
 }
