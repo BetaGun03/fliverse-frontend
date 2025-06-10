@@ -20,3 +20,23 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   --mdc-radio-selected-hover-state-layer-color: #dc2626 !important;
   --mdc-radio-selected-pressed-state-layer-color: #dc2626 !important;
 }
+
+/* Global customization of Angular Material snackbar */
+.mat-mdc-snack-bar-container {
+  color: #fff !important;              /* White text */
+  border-radius: 8px !important;       /* Rounded corners */
+  border: 3px solid #fb2c36 !important;
+  font-family: 'Roboto', 'Helvetica Neue', sans-serif !important;
+  font-size: 1rem !important;
+}
+
+.mat-mdc-snack-bar-action {
+  color: #fb2c36 !important;           /* Action button color */
+  font-weight: bold !important;
+  letter-spacing: 1px !important;
+}
+
+/* Optional: entry/exit animation */
+.mat-mdc-snack-bar-container {
+  transition: background 0.3s, color 0.3s !important;
+}

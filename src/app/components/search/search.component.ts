@@ -15,6 +15,7 @@ import { MatButtonModule } from '@angular/material/button'
 import { MatIconModule } from '@angular/material/icon'
 import { MatChipsModule } from '@angular/material/chips'
 import { MatNativeDateModule } from '@angular/material/core'
+import { MatSnackBar } from '@angular/material/snack-bar'
 
 @Component({
   selector: 'app-search',
@@ -69,7 +70,7 @@ export class SearchComponent {
   availableGenres: string[] = []
   selectedGenres: string[] = []
 
-  constructor(private contentService: ContentService, private router: Router, private route: ActivatedRoute) 
+  constructor(private contentService: ContentService, private router: Router, private route: ActivatedRoute, private snackBar: MatSnackBar) 
   {
     this.contentService.getContentGenres()
       .then(genres => {
@@ -112,7 +113,6 @@ export class SearchComponent {
       this.isLoading = true
       this.noResults = false
 
-      // PASA LOS FILTROS TAMBIÉN AQUÍ
       this.contentService.searchContentsByTitle(
         this.titleFromQuery.trim(),
         this.selectedGenres,
@@ -175,6 +175,11 @@ export class SearchComponent {
 
   onSearch() 
   {
+    if (this.searchInput.trim() === '') 
+    {
+      this.snackBar.open('Please enter a title to search', 'Close', { duration: 3000 })
+      return
+    }
     const title = this.searchInput.trim()
 
     this.isLoading = true
@@ -243,7 +248,7 @@ export class SearchComponent {
 
   applyFilters() 
   {
-     if (this.drawer) 
+    if (this.drawer) 
     {
       this.drawer.close()
     }
