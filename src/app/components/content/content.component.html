@@ -76,11 +76,16 @@
             </div>
 
             <!-- Trailer Link (if available) -->
-            <div *ngIf="content.trailer_url" class="mb-6">
+            <div *ngIf="content.trailer_url && !isAYouTubeVideo(content)" class="mb-6">
                 <a [href]="content.trailer_url" target="_blank" rel="noopener" class="inline-flex items-center text-red-600 hover:underline font-semibold text-lg">
                     <mat-icon class="mr-1">play_circle</mat-icon>
                     Watch Trailer
                 </a>
+            </div>
+
+            <!-- Youtube Trailer Link (if available) -->
+            <div *ngIf="content.trailer_url && isAYouTubeVideo(content)" class="mb-6">
+                <app-video-player [videoId]="getYouTubeVideoId(content.trailer_url)"></app-video-player>
             </div>
         </div>
 

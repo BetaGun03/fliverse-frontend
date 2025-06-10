@@ -8,3 +8,4 @@ El proyecto está hecho en Angular v19.2.8.
 > * [Tailwind](https://tailwindcss.com/)
 > * [GSAP](https://www.npmjs.com/package/gsap)
 > * [Axios](https://www.npmjs.com/package/axios)
+> * [@angular/youtube-player](https://www.npmjs.com/package/@angular/youtube-player)

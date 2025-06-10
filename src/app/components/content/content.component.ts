@@ -12,10 +12,11 @@ import { FormsModule } from '@angular/forms';
 import { ListService } from '../../services/list/list.service';
 import { List } from '../../interfaces/list';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { VideoPlayerComponent } from '../video-player/video-player.component';
 
 @Component({
   selector: 'app-content',
-  imports: [MatIcon, CommonModule, ContentskeletonComponent, CommentsComponent, FormsModule],
+  imports: [MatIcon, CommonModule, ContentskeletonComponent, CommentsComponent, FormsModule, VideoPlayerComponent],
   templateUrl: './content.component.html',
   styleUrl: './content.component.css'
 })
@@ -31,8 +32,6 @@ export class ContentComponent {
   showListDropdown = false // Flag to control the visibility of the list dropdown
   addingToList: boolean = false // Flag to control the adding to list state
   ratingContent: boolean = false // Flag to control the rating content state
-
-  //AÑADIR A LISTAS
 
   constructor(private router: Router, private location: Location, private contentService: ContentService, private route: ActivatedRoute, public auth: AuthService, public listService: ListService, public snackBar: MatSnackBar) 
   { 
@@ -278,6 +277,26 @@ export class ContentComponent {
   goBack() 
   {
     this.location.back()
+  }
+
+  isAYouTubeVideo(content: Content): boolean
+  {
+    if(content && content.trailer_url)
+    {
+      return content.trailer_url.includes('youtube.com') || content.trailer_url.includes('youtu.be')
+    }
+    return false
+  }
+
+  getYouTubeVideoId(url: string): string | null
+  {
+    try {
+      const parsedUrl = new URL(url)
+      const videoId = parsedUrl.searchParams.get('v')
+      return videoId
+    } catch {
+      return null
+    }
   }
 
 }

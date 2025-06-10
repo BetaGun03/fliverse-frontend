@@ -40,3 +40,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .mat-mdc-snack-bar-container {
   transition: background 0.3s, color 0.3s !important;
 }
+
+youtube-player iframe {
+  border-radius: 1rem; /* igual que rounded-2xl */
+}
