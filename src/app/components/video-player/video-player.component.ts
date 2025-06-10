@@ -13,11 +13,9 @@ export class VideoPlayerComponent {
 
   onReady(event: YT.PlayerEvent) 
   {
-    console.log('Reproductor listo', event)
   }
 
   onStateChange(event: YT.OnStateChangeEvent) 
   {
-    console.log('Estado cambiado', event.data)
   }
 }
