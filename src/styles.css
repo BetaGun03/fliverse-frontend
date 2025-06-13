@@ -42,5 +42,42 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 
 youtube-player iframe {
-  border-radius: 1rem; /* igual que rounded-2xl */
+  border-radius: 1rem; /* rounded-2xl */
+}
+
+/* Angular Material paginator: selected dropdown item background and border color */
+.mat-mdc-select-panel .mdc-list-item--selected,
+.mat-mdc-select-panel .mdc-list-item--activated {
+  background-color: #fee2e2 !important; /* rojo claro */
+  color: #b91c1c !important;            /* texto rojo */
+}
+
+/* Red border for the paginator select */
+.mat-mdc-select {
+  --mdc-select-outline-color: #dc2626 !important;
+  --mdc-select-focused-outline-color: #dc2626 !important;
+  --mdc-select-hover-outline-color: #dc2626 !important;
+}
+.mat-mdc-select.mdc-select--focused .mdc-notched-outline {
+  border-color: #dc2626 !important;
+}
+.mat-mdc-select .mdc-notched-outline {
+  border-color: #dc2626 !important;
+}
+
+/* Optional: red border in the dropdown menu */
+.mat-mdc-select-panel {
+  border: 2px solid #dc2626 !important;
+  border-radius: 8px !important;
+}
+
+/* Red border for the select in normal, hover, and focus states */
+.mat-mdc-select .mdc-notched-outline,
+.mat-mdc-select.mdc-select--focused .mdc-notched-outline {
+  border-color: #dc2626 !important;
+}
+
+.mdc-notched-outline__leading,
+.mdc-notched-outline__trailing {
+  border-color: #dc2626 !important;
 }

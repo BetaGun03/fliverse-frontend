@@ -140,7 +140,7 @@
 
   <!-- Main content -->
   <div mat-drawer-content class="h-full overflow-auto">
-    <div class="px-4 sm:px-8 pb-8">
+    <div class="px-4 sm:px-8 pb-4">
       <div class="flex items-center justify-between">
         <h1 class="text-5xl font-bold mt-6 text-primary">Search</h1>
         <!-- Open button only visible on large screens and when the drawer is closed -->
@@ -238,6 +238,19 @@
           <ng-container *ngTemplateOutlet="skeletonCardsRandom"></ng-container>
         </ng-container>
       </div>
+
+      
     </div>
   </div>
 </mat-drawer-container>
+
+<!-- Paginator -->
+<mat-paginator
+  [length]="totalResults"
+  [pageSize]="pageSize"
+  [pageIndex]="currentPage - 1"
+  [pageSizeOptions]="[5, 10, 20, 50]"
+  (page)="onPageChange($event)"
+  *ngIf="true"
+>
+</mat-paginator>

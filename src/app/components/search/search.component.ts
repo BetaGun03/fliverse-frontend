@@ -16,6 +16,7 @@ import { MatIconModule } from '@angular/material/icon'
 import { MatChipsModule } from '@angular/material/chips'
 import { MatNativeDateModule } from '@angular/material/core'
 import { MatSnackBar } from '@angular/material/snack-bar'
+import { MatPaginatorModule } from '@angular/material/paginator'
 
 @Component({
   selector: 'app-search',
@@ -33,7 +34,8 @@ import { MatSnackBar } from '@angular/material/snack-bar'
     MatIconModule,
     MatChipsModule,
     MatNativeDateModule,
-    MatChipsModule
+    MatChipsModule,
+    MatPaginatorModule
   ],
   templateUrl: './search.component.html',
   styleUrl: './search.component.css'
@@ -48,6 +50,9 @@ export class SearchComponent {
   skeletonArray: number[] = Array(10).fill(0)
   contents: Content[] = []
   searchInput = ''
+  totalResults = 0
+  pageSize = 10
+  currentPage = 1
   private lastTitleFromQuery = ''
 
   filters: {
@@ -105,7 +110,7 @@ export class SearchComponent {
   }
 
   // Function to load contents based on the current state or query parameters.
-  private loadContents() 
+  private loadContents(page: number = 1) 
   {
     const stateContents = history.state?.contents
 
@@ -129,11 +134,15 @@ export class SearchComponent {
         this.selectedTypes.length === 1 ? this.selectedTypes[0] : undefined,
         undefined,
         this.filters.durationMin !== null ? this.filters.durationMin : undefined,
-        this.filters.durationMax !== null ? this.filters.durationMax : undefined
+        this.filters.durationMax !== null ? this.filters.durationMax : undefined,
+        page,
+        this.pageSize
       )
         .then((result: { contents: Content[]; total: number; page: number; limit: number }) => {
           this.contents = result.contents
           this.noResults = result.contents.length === 0
+          this.totalResults = result.total
+          this.currentPage = result.page
         })
         .catch(error => {
           this.contents = []
@@ -184,7 +193,7 @@ export class SearchComponent {
   }
 
   // Function to handle search input. Manually triggers the search when the user clicks the search button.
-  onSearch() 
+  onSearch(page: number = 1) 
   {
     const hasTitle = this.searchInput && this.searchInput.trim() !== ''
     const hasGenres = this.selectedGenres && this.selectedGenres.length > 0
@@ -211,11 +220,15 @@ export class SearchComponent {
       this.selectedTypes.length === 1 ? this.selectedTypes[0] : undefined,
       undefined,
       this.filters.durationMin !== null ? this.filters.durationMin : undefined,
-      this.filters.durationMax !== null ? this.filters.durationMax : undefined
+      this.filters.durationMax !== null ? this.filters.durationMax : undefined,
+      page,
+      this.pageSize
     )
       .then((result: { contents: Content[]; total: number; page: number; limit: number }) => {
         this.contents = result.contents
         this.noResults = result.contents.length === 0
+        this.totalResults = result.total
+        this.currentPage = result.page
 
         this.router.navigate([], {
           relativeTo: this.route,
@@ -261,6 +274,14 @@ export class SearchComponent {
     {
       this.selectedGenres.push(genre)
     }
+  }
+
+  // Change the page size and current page when the paginator changes.
+  onPageChange(event: any) 
+  {
+    this.pageSize = event.pageSize
+    this.currentPage = event.pageIndex + 1
+    this.onSearch(this.currentPage)
   }
 
 }
