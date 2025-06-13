@@ -92,20 +92,23 @@ export class SearchComponent {
     this.route.queryParams.subscribe(params => {
       // Title
       const newTitle = params['title'] || ''
-      // Genres (can be string or array)
+      // Genres (can be string o array)
       const newGenres = params['genre']
         ? Array.isArray(params['genre']) ? params['genre'] : [params['genre']]
         : []
-      // Keywords (can be string or array)
+      // Keywords
       const newKeywords = params['keywords']
         ? Array.isArray(params['keywords']) ? params['keywords'] : [params['keywords']]
         : []
+      // Type (movie, series, all)
+      const newType = params['type'] || 'all'
 
       // Update local filters
       this.titleFromQuery = newTitle
       this.searchInput = newTitle
       this.selectedGenres = newGenres
       this.filters.keywords = newKeywords.join(',')
+      this.selectedTypes = [newType]
 
       // Start the search
       this.loadContents()

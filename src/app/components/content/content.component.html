@@ -57,7 +57,7 @@
                 <ng-container *ngFor="let genre of content.genre; let i = index">
                     <span
                         (click)="goToSearchByGenre(genre)"
-                        class="inline-block bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm mr-2 mb-1"
+                        class="inline-block bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm mr-2 mb-1 cursor-pointer hover:bg-red-200 transition"
                         [class.ml-2]="i === 0"
                     >
                         {{ genre }}
@@ -71,7 +71,7 @@
                 <ng-container *ngFor="let keyword of content.keywords; let i = index">
                     <span
                         (click)="goToSearchByKeyword(keyword)"
-                        class="inline-block bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm mr-2 mb-1"
+                        class="inline-block bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm mr-2 mb-1 cursor-pointer hover:bg-gray-200 transition"
                         [class.ml-2]="i === 0"
                     >#{{ keyword }}</span>
                 </ng-container>
@@ -131,7 +131,7 @@
             </div>
             
             <!-- Back Button -->
-            <button (click)="goBack()" mat-stroked-button color="primary" class="font-bold px-8 py-3 rounded-lg border-2 border-red-700 text-red-700 hover:!bg-red-50 text-lg flex items-center justify-center cursor-pointer">
+            <button (click)="goBack()" mat-stroked-button color="primary" class="font-bold px-8 py-3 rounded-lg border-2 border-red-700 text-red-700  hover:!text-white hover:!bg-red-700 hover:!border-red-700 text-lg flex items-center justify-center cursor-pointer transition-colors duration-200">
                 <mat-icon class="mr-2">arrow_back</mat-icon>
                 Back
             </button>
