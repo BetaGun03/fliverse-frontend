@@ -135,6 +135,22 @@
         />
       </div>
 
+      <!-- Reset Filters Button -->
+      <div class="w-full flex justify-center mt-6">
+        <button
+          type="button"
+          mat-stroked-button
+          color="warn"
+          (click)="resetFilters()"
+          class="font-semibold"
+          style="color: #dc2626 !important; transition: background 0.2s;"
+          onmouseover="this.style.background='#dc2626'; this.style.color='#fff';"
+          onmouseout="this.style.background=''; this.style.color='#dc2626';"
+        >
+          Reset Filters
+        </button>
+      </div>
+
     </form>
   </mat-drawer>
 
@@ -238,8 +254,6 @@
           <ng-container *ngTemplateOutlet="skeletonCardsRandom"></ng-container>
         </ng-container>
       </div>
-
-      
     </div>
   </div>
 </mat-drawer-container>

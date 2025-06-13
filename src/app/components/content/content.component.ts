@@ -299,4 +299,20 @@ export class ContentComponent {
     }
   }
 
+  // Search functions to navigate to search results based on selected genre
+  goToSearchByGenre(genre: string) 
+  {
+    this.router.navigate(['/search'], {
+      queryParams: { genre }
+    })
+  }
+
+  // Search functions to navigate to search results based on selected keyword
+  goToSearchByKeyword(keyword: string) 
+  {
+    this.router.navigate(['/search'], {
+      queryParams: { keywords: keyword }
+    })
+  }
+
 }

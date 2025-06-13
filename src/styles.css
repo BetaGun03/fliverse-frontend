@@ -23,15 +23,15 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 /* Global customization of Angular Material snackbar */
 .mat-mdc-snack-bar-container {
-  color: #fff !important;              /* White text */
-  border-radius: 8px !important;       /* Rounded corners */
+  color: #fff !important;
+  border-radius: 8px !important;
   border: 3px solid #fb2c36 !important;
   font-family: 'Roboto', 'Helvetica Neue', sans-serif !important;
   font-size: 1rem !important;
 }
 
 .mat-mdc-snack-bar-action {
-  color: #fb2c36 !important;           /* Action button color */
+  color: #fb2c36 !important;
   font-weight: bold !important;
   letter-spacing: 1px !important;
 }
@@ -42,14 +42,14 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 
 youtube-player iframe {
-  border-radius: 1rem; /* rounded-2xl */
+  border-radius: 1rem;
 }
 
 /* Angular Material paginator: selected dropdown item background and border color */
 .mat-mdc-select-panel .mdc-list-item--selected,
 .mat-mdc-select-panel .mdc-list-item--activated {
-  background-color: #fee2e2 !important; /* rojo claro */
-  color: #b91c1c !important;            /* texto rojo */
+  background-color: #fee2e2 !important;
+  color: #b91c1c !important; 
 }
 
 /* Red border for the paginator select */

@@ -90,20 +90,31 @@ export class SearchComponent {
   ngOnInit() 
   {
     this.route.queryParams.subscribe(params => {
+      // Title
       const newTitle = params['title'] || ''
-      if (newTitle !== this.lastTitleFromQuery) 
-      {
-        this.titleFromQuery = newTitle
-        this.lastTitleFromQuery = newTitle
-        this.loadContents()
-      }
+      // Genres (can be string or array)
+      const newGenres = params['genre']
+        ? Array.isArray(params['genre']) ? params['genre'] : [params['genre']]
+        : []
+      // Keywords (can be string or array)
+      const newKeywords = params['keywords']
+        ? Array.isArray(params['keywords']) ? params['keywords'] : [params['keywords']]
+        : []
+
+      // Update local filters
+      this.titleFromQuery = newTitle
+      this.searchInput = newTitle
+      this.selectedGenres = newGenres
+      this.filters.keywords = newKeywords.join(',')
+
+      // Start the search
+      this.loadContents()
     })
 
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
-      if (!this.titleFromQuery) 
-      {
+      if (!this.titleFromQuery && this.selectedGenres.length === 0 && !this.filters.keywords) {
         this.loadContents()
       }
     })
@@ -196,54 +207,65 @@ export class SearchComponent {
   onSearch(page: number = 1) 
   {
     const hasTitle = this.searchInput && this.searchInput.trim() !== ''
-    const hasGenres = this.selectedGenres && this.selectedGenres.length > 0
-    const hasKeywords = this.filters.keywords && this.filters.keywords.split(',').map(k => k.trim()).filter(k => k).length > 0
+  const hasGenres = this.selectedGenres && this.selectedGenres.length > 0
+  const hasKeywords = this.filters.keywords && this.filters.keywords.split(',').map(k => k.trim()).filter(k => k).length > 0
 
-    if (!hasTitle && !hasGenres && !hasKeywords) 
-    {
-      this.snackBar.open('Please enter a title, genre or keyword to search', 'Close', { duration: 3000 })
-      return
-    }
+  if (!hasTitle && !hasGenres && !hasKeywords) 
+  {
+    this.snackBar.open('Please enter a title, genre or keyword to search', 'Close', { duration: 3000 })
+    return
+  }
 
-    const title = hasTitle ? this.searchInput.trim() : undefined
+  const title = hasTitle ? this.searchInput.trim() : undefined
 
-    this.isLoading = true
-    this.noResults = false
+  this.isLoading = true
+  this.noResults = false
 
-    this.contentService.searchContentsByTitle(
-      title,
-      this.selectedGenres,
-      hasKeywords ? this.filters.keywords.split(',').map(k => k.trim()).filter(k => k) : [],
-      undefined,
-      this.filters.releaseDateFrom ? new Date(this.filters.releaseDateFrom) : undefined,
-      this.filters.releaseDateTo ? new Date(this.filters.releaseDateTo) : undefined,
-      this.selectedTypes.length === 1 ? this.selectedTypes[0] : undefined,
-      undefined,
-      this.filters.durationMin !== null ? this.filters.durationMin : undefined,
-      this.filters.durationMax !== null ? this.filters.durationMax : undefined,
-      page,
-      this.pageSize
-    )
-      .then((result: { contents: Content[]; total: number; page: number; limit: number }) => {
-        this.contents = result.contents
-        this.noResults = result.contents.length === 0
-        this.totalResults = result.total
-        this.currentPage = result.page
+  this.contentService.searchContentsByTitle(
+    title,
+    this.selectedGenres,
+    hasKeywords ? this.filters.keywords.split(',').map(k => k.trim()).filter(k => k) : [],
+    undefined,
+    this.filters.releaseDateFrom ? new Date(this.filters.releaseDateFrom) : undefined,
+    this.filters.releaseDateTo ? new Date(this.filters.releaseDateTo) : undefined,
+    this.selectedTypes.length === 1 ? this.selectedTypes[0] : undefined,
+    undefined,
+    this.filters.durationMin !== null ? this.filters.durationMin : undefined,
+    this.filters.durationMax !== null ? this.filters.durationMax : undefined,
+    page,
+    this.pageSize
+  )
+    .then((result: { contents: Content[]; total: number; page: number; limit: number }) => {
+      this.contents = result.contents
+      this.noResults = result.contents.length === 0
+      this.totalResults = result.total
+      this.currentPage = result.page
 
-        this.router.navigate([], {
-          relativeTo: this.route,
-          queryParams: { title: title || null },
-          queryParamsHandling: 'merge'
-        })
+      // Actualiza todos los filtros en la URL
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: {
+          title: title || null,
+          genre: this.selectedGenres.length > 0 ? this.selectedGenres : null,
+          keywords: hasKeywords ? this.filters.keywords : null,
+          releaseDateFrom: this.filters.releaseDateFrom ? this.filters.releaseDateFrom.toISOString() : null,
+          releaseDateTo: this.filters.releaseDateTo ? this.filters.releaseDateTo.toISOString() : null,
+          durationMin: this.filters.durationMin !== null ? this.filters.durationMin : null,
+          durationMax: this.filters.durationMax !== null ? this.filters.durationMax : null,
+          type: this.selectedTypes.length === 1 ? this.selectedTypes[0] : null,
+          page: this.currentPage
+        },
+        queryParamsHandling: 'merge'
       })
-      .catch(error => {
-        this.contents = []
-        this.noResults = true
-        console.error('Error searching contents:', error)
-      })
-      .finally(() => {
-        this.isLoading = false
-      })
+    })
+    .catch(error => {
+      this.contents = []
+      this.noResults = true
+      console.error('Error searching contents:', error)
+    })
+    .finally(() => {
+      this.isLoading = false
+    })
   }
 
   goToContent(content: Content) 
@@ -282,6 +304,59 @@ export class SearchComponent {
     this.pageSize = event.pageSize
     this.currentPage = event.pageIndex + 1
     this.onSearch(this.currentPage)
+  }
+
+  // Reset all filters and query parameters. Only if there are filters applied.
+  resetFilters()
+  {
+    const hasFilters =
+      this.titleFromQuery.trim() !== '' ||
+      this.searchInput.trim() !== '' ||
+      this.selectedGenres.length > 0 ||
+      this.filters.keywords.trim() !== '' ||
+      this.filters.releaseDateFrom !== null ||
+      this.filters.releaseDateTo !== null ||
+      this.filters.durationMin !== null ||
+      this.filters.durationMax !== null ||
+      (this.selectedTypes.length !== 1 || this.selectedTypes[0] !== 'all') ||
+      this.currentPage !== 1
+
+    if (!hasFilters) 
+    {
+      return
+    }
+
+    this.titleFromQuery = ''
+    this.searchInput = ''
+    this.selectedGenres = []
+    this.filters = {
+      releaseDateFrom: null,
+      releaseDateTo: null,
+      keywords: '',
+      durationMin: null,
+      durationMax: null
+    }
+    this.selectedTypes = ['all']
+    this.currentPage = 1
+
+    // Remove all filter-related query params from the URL
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        title: null,
+        genre: null,
+        keywords: null,
+        releaseDateFrom: null,
+        releaseDateTo: null,
+        durationMin: null,
+        durationMax: null,
+        type: null,
+        page: null
+      },
+      queryParamsHandling: ''
+    })
+
+    this.loadContents()
   }
 
 }
