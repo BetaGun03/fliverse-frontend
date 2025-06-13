@@ -95,6 +95,20 @@
         </mat-chip-listbox>
       </div>
 
+      <!-- Keywords -->
+      <div class="w-full mb-4">
+        <label class="block mb-2 font-medium text-gray-700">Keywords</label>
+        <input
+          type="text"
+          class="w-full px-3 py-2 border rounded focus:placeholder:!text-gray-400 focus:outline-none focus:ring-2 focus:ring-red-600"
+          [(ngModel)]="filters.keywords"
+          name="keywords"
+          placeholder="Enter keywords separated by commas"
+          [ngModelOptions]="{standalone: true}"
+          autocomplete="off"
+        />
+      </div>
+
       <!-- Duration Min -->
       <div class="w-full mb-4">
         <label class="block mb-2 font-medium text-gray-700">Duration Min (minutes)</label>
@@ -121,7 +135,6 @@
         />
       </div>
 
-      <button mat-raised-button color="primary" class="w-full mt-4 !text-primary hover:!bg-red-50 !transition-colors" (click)="applyFilters()">Apply filters</button>
     </form>
   </mat-drawer>
 
@@ -184,7 +197,7 @@
       >
         <!-- Message if no results -->
         <div *ngIf="noResults" class="col-span-full text-center text-xl text-gray-500 py-8">
-            No results found for "{{ titleFromQuery }}". Please try a different search term.
+            No results found for current search terms. Please try a different search term.
         </div>
 
         <!-- Search Results: Show when not loading and not noResults -->

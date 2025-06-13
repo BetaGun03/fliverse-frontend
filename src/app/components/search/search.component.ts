@@ -108,15 +108,20 @@ export class SearchComponent {
   {
     const stateContents = history.state?.contents
 
-    if (this.titleFromQuery) 
+    // Allow search if there is a title, genres, or keywords
+    const hasTitle = this.titleFromQuery && this.titleFromQuery.trim() !== ''
+    const hasGenres = this.selectedGenres && this.selectedGenres.length > 0
+    const hasKeywords = this.filters.keywords && this.filters.keywords.split(',').map(k => k.trim()).filter(k => k).length > 0
+
+    if (hasTitle || hasGenres || hasKeywords) 
     {
       this.isLoading = true
       this.noResults = false
 
       this.contentService.searchContentsByTitle(
-        this.titleFromQuery.trim(),
+        hasTitle ? this.titleFromQuery.trim() : undefined,
         this.selectedGenres,
-        this.filters.keywords ? this.filters.keywords.split(',').map(k => k.trim()).filter(k => k) : [],
+        hasKeywords ? this.filters.keywords.split(',').map(k => k.trim()).filter(k => k) : [],
         undefined,
         this.filters.releaseDateFrom ? new Date(this.filters.releaseDateFrom) : undefined,
         this.filters.releaseDateTo ? new Date(this.filters.releaseDateTo) : undefined,
@@ -138,18 +143,21 @@ export class SearchComponent {
           this.isLoading = false
         })
     }
+    // If there are contents in the navigation state, use them
     else if (stateContents && Array.isArray(stateContents.contents)) 
     {
       this.contents = stateContents.contents
       this.noResults = this.contents.length === 0
       this.isLoading = false
     } 
+    // If the navigation state is an empty array, show no results
     else if (stateContents && Array.isArray(stateContents) && stateContents.length === 0) 
     {
       this.contents = []
       this.noResults = true
       this.isLoading = false
     } 
+    // If there is no navigation state, show random contents
     else if (stateContents === undefined) 
     {
       this.isLoading = true
@@ -165,6 +173,7 @@ export class SearchComponent {
           this.isLoading = false
         })
     } 
+    // Default: show no results
     else 
     {
       this.contents = []
@@ -175,12 +184,17 @@ export class SearchComponent {
 
   onSearch() 
   {
-    if (this.searchInput.trim() === '') 
+    const hasTitle = this.searchInput && this.searchInput.trim() !== ''
+    const hasGenres = this.selectedGenres && this.selectedGenres.length > 0
+    const hasKeywords = this.filters.keywords && this.filters.keywords.split(',').map(k => k.trim()).filter(k => k).length > 0
+
+    if (!hasTitle && !hasGenres && !hasKeywords) 
     {
-      this.snackBar.open('Please enter a title to search', 'Close', { duration: 3000 })
+      this.snackBar.open('Please enter a title, genre or keyword to search', 'Close', { duration: 3000 })
       return
     }
-    const title = this.searchInput.trim()
+
+    const title = hasTitle ? this.searchInput.trim() : undefined
 
     this.isLoading = true
     this.noResults = false
@@ -188,7 +202,7 @@ export class SearchComponent {
     this.contentService.searchContentsByTitle(
       title,
       this.selectedGenres,
-      this.filters.keywords ? this.filters.keywords.split(',').map(k => k.trim()).filter(k => k) : [],
+      hasKeywords ? this.filters.keywords.split(',').map(k => k.trim()).filter(k => k) : [],
       undefined,
       this.filters.releaseDateFrom ? new Date(this.filters.releaseDateFrom) : undefined,
       this.filters.releaseDateTo ? new Date(this.filters.releaseDateTo) : undefined,
@@ -217,7 +231,8 @@ export class SearchComponent {
       })
   }
 
-  goToContent(content: Content) {
+  goToContent(content: Content) 
+  {
     this.router.navigate(['/content', content.id], { state: { content: content } })
   }
 
@@ -243,14 +258,6 @@ export class SearchComponent {
     else 
     {
       this.selectedGenres.push(genre)
-    }
-  }
-
-  applyFilters() 
-  {
-    if (this.drawer) 
-    {
-      this.drawer.close()
     }
   }
 
