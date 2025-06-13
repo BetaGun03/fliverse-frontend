@@ -51,12 +51,12 @@ export class HeaderComponent {
           if(movies.contents.length === 0)
           {
             this.router.navigate(['/search'], {
-              queryParams: { title: query, type: 'movies' }, state: { contents: []  }
+              queryParams: { title: query, type: 'movie' }, state: { contents: []  }
             })
           }
           else{
             this.router.navigate(['/search'], { 
-              queryParams: { title: query, type: 'movies' }, 
+              queryParams: { title: query, type: 'movie' }, 
               state: { contents: movies }
             })
           }

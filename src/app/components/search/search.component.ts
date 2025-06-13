@@ -104,6 +104,7 @@ export class SearchComponent {
     })
   }
 
+  // Function to load contents based on the current state or query parameters.
   private loadContents() 
   {
     const stateContents = history.state?.contents
@@ -182,6 +183,7 @@ export class SearchComponent {
     }
   }
 
+  // Function to handle search input. Manually triggers the search when the user clicks the search button.
   onSearch() 
   {
     const hasTitle = this.searchInput && this.searchInput.trim() !== ''
