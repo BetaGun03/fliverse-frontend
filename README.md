@@ -7,100 +7,99 @@
   
   [![Angular](https://img.shields.io/badge/Angular-19.2.8-DD0031?style=for-the-badge&logo=angular&logoColor=white)](https://angular.io/)
   [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.1.6-06B6D4?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-  [![Material UI](https://img.shields.io/badge/Material_UI-Latest-0081CB?style=for-the-badge&logo=mui&logoColor=white)](https://material.angular.dev/)
+  [![Material UI](https://img.shields.io/badge/Material_UI-19.2.16-0081CB?style=for-the-badge&logo=mui&logoColor=white)](https://material.angular.dev/)
 
 </div>
 
 ---
 
-## 📋 Tabla de Contenidos
+## Tabla de Contenidos
 
-- [📖 Sobre el Proyecto](#-sobre-el-proyecto)
-- [✨ Características](#-características)
-- [🚀 Tecnologías](#-tecnologías)
-- [⚡ Instalación y Configuración](#-instalación-y-configuración)
-- [🎮 Uso](#-uso)
-- [📁 Estructura del Proyecto](#-estructura-del-proyecto)
-- [📄 Licencia](#-licencia)
-- [👨‍💻 Autor](#-autor)
+- [Sobre el Proyecto](#sobre-el-proyecto)
+- [Características](#características)
+- [Tecnologías](#tecnologías)
+- [Instalación y Configuración](#instalación-y-configuración)
+- [Uso](#uso)
+- [Estructura del Proyecto](#estructura-del-proyecto)
+- [Licencia](#licencia)
+- [Autor](#autor)
 
 ---
 
-## 📖 Sobre el Proyecto
+## Sobre el Proyecto
 
 **Fliverse** es una aplicación web desarrollada como **Proyecto de Fin de Grado (TFG)** que funciona como una plataforma comunitaria para la gestión y descubrimiento de contenido audiovisual.
 
-### 🎯 Objetivo Principal
+### Objetivo Principal
 
 Crear una experiencia de usuario moderna e intuitiva donde los usuarios puedan:
-- 🔍 **Buscar** y descubrir películas y series
-- 📝 **Contribuir** añadiendo nueva información
-- 💬 **Interactuar** con la comunidad mediante comentarios
-- 📋 **Organizar** su contenido en listas personalizadas
-- 👤 **Gestionar** su perfil y preferencias
+- **Buscar** y descubrir películas y series
+- **Contribuir** añadiendo nueva información
+- **Interactuar** con la comunidad mediante comentarios
+- **Organizar** su contenido en listas personalizadas
+- **Gestionar** su perfil y preferencias
 
 ---
 
-## ✨ Características
+## Características
 
-### 🌟 Funcionalidades Principales
+### Funcionalidades Principales
 
-- **🔐 Sistema de Autenticación**
+- **Sistema de Autenticación**
   - Registro e inicio de sesión tradicional
   - Integración con Google OAuth
   - Gestión segura de sesiones
 
-- **🎭 Gestión de Contenido**
+- **Gestión de Contenido**
   - Búsqueda avanzada de películas y series
   - Páginas detalladas con información completa
   - Reproductor de tráilers integrado con YouTube
   - Sistema de valoraciones y comentarios
 
-- **📚 Listas Personalizadas**
+- **Listas Personalizadas**
   - Creación y gestión de listas personalizadas
   - Marcado de contenido como visto/por ver
   - Seguimiento del progreso de visualización
 
-- **👥 Funciones Sociales**
+- **Funciones Sociales**
   - Sistema de comentarios y valoraciones
   - Perfiles de usuario personalizables
   - Interacción comunitaria
 
-### 🎨 Experiencia de Usuario
+### Experiencia de Usuario
 
-- **📱 Diseño Responsivo**: Optimizado para todos los dispositivos
-- **🌙 Modo Oscuro**: Interfaz cómoda para cualquier momento del día  
-- **⚡ Carga Rápida**: Optimizaciones de rendimiento y lazy loading
-- **🎬 Animaciones Fluidas**: Transiciones suaves con GSAP
-- **♿ Accesibilidad**: Cumple con estándares de accesibilidad web
+- **Diseño Responsivo**: Optimizado para todos los dispositivos 
+- **Carga Rápida**: Optimizaciones de rendimiento y lazy loading
+- **Animaciones Fluidas**: Transiciones suaves con GSAP
+- **Accesibilidad**: Cumple con estándares de accesibilidad web
 
 ---
 
-## 🚀 Tecnologías
+## Tecnologías
 
-### 🏗️ Frontend Framework
+### Frontend Framework
 - **[Angular 19.2.8](https://angular.io/)** - Framework principal
-- **[TypeScript 5.5.2](https://www.typescriptlang.org/)** - Lenguaje de programación
+- **[TypeScript](https://www.typescriptlang.org/)** - Lenguaje de programación
 
-### 🎨 UI/UX
+### UI/UX
 - **[Angular Material](https://material.angular.dev/)** - Componentes UI
-- **[Tailwind CSS 4.1.6](https://tailwindcss.com/)** - Framework de utilidades CSS
+- **[Tailwind CSS](https://tailwindcss.com/)** - Framework de utilidades CSS
 - **[GSAP](https://www.npmjs.com/package/gsap)** - Animaciones avanzadas
 
-### 🔧 Utilidades y Servicios
+### Utilidades y Servicios
 - **[Axios](https://www.npmjs.com/package/axios)** - Cliente HTTP
 - **[Moment.js](https://momentjs.com/)** - Manejo de fechas
 - **[YouTube Player](https://www.npmjs.com/package/@angular/youtube-player)** - Reproductor de videos
 - **[Vercel Analytics](https://vercel.com/analytics)** - Análisis de rendimiento
 
-### 🛠️ Herramientas de Desarrollo
+### Herramientas de Desarrollo
 - **[Angular CLI](https://cli.angular.io/)** - Herramientas de desarrollo
 
 ---
 
-## ⚡ Instalación y Configuración
+## Instalación y Configuración
 
-### 📋 Prerrequisitos
+### Prerrequisitos
 
 Asegúrate de tener instalado:
 - **Node.js** (versión 18 o superior)
@@ -116,7 +115,7 @@ npm --version
 npm install -g @angular/cli
 ```
 
-### 🔧 Instalación
+### Instalación
 
 1. **Clonar el repositorio**
    ```bash
@@ -149,26 +148,26 @@ npm install -g @angular/cli
 
 ---
 
-## 🎮 Uso
+## Uso
 
-### 🚀 Scripts Disponibles
+### Scripts Disponibles
 
 | Comando | Descripción |
 |---------|-------------|
 | `ng s -o` | Inicia el servidor de desarrollo y abre el navegador |
 | `ng build` | Construye la aplicación para producción |
 
-### 🌐 Navegación
+### Navegación
 
-- **🏠 Inicio** (`/`) - Página principal con contenido destacado
-- **🔍 Búsqueda** (`/search`) - Búsqueda avanzada de contenido
-- **📋 Mis Listas** (`/lists`) - Gestión de listas personalizadas
-- **👤 Perfil** (`/profile`) - Información del usuario
-- **🔐 Auth** (`/login`, `/register`) - Sistema de autenticación
+- **Inicio** (`/`) - Página principal con contenido destacado
+- **Búsqueda** (`/search`) - Búsqueda avanzada de contenido
+- **Mis Listas** (`/lists`) - Gestión de listas personalizadas
+- **Perfil** (`/profile`) - Información del usuario
+- **Auth** (`/login`, `/register`) - Sistema de autenticación
 
 ---
 
-## 📁 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 src/
@@ -198,24 +197,23 @@ src/
 
 ---
 
-## 📄 Licencia
+## Licencia
 
 Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
 
 ---
 
-## 👨‍💻 Autor
+## Autor
 
 **Jaime Hedrera Rosa** - *Desarrollador Full Stack*
 
-- 🌐 **Portfolio**: [jaimehedrera.es](https://jaimehedrera.es)
-- 💼 **LinkedIn**: [Jaime Hedrera Rosa](https://www.linkedin.com/in/jaimehedrerarosa)
-- 📧 **Email**: [business@jaimehedrera.es](mailto:business@jaimehedrera.es)
-- 💻 **GitHub**: [@BetaGun03](https://github.com/BetaGun03)
+- **Portfolio**: [jaimehedrera.es](https://jaimehedrera.es)
+- **LinkedIn**: [Jaime Hedrera Rosa](https://www.linkedin.com/in/jaimehedrerarosa)
+- **Email**: [business@jaimehedrera.es](mailto:business@jaimehedrera.es)
+- **GitHub**: [@BetaGun03](https://github.com/BetaGun03)
 
 ---
 
 <div align="center">
-  <p>⭐ ¡Dale una estrella si te gusta este proyecto! ⭐</p>
   <p>Desarrollado como TFG por Jaime Hedrera Rosa.</p>
 </div>
