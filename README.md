@@ -190,8 +190,6 @@ src/
 │   ├── 📁 interfaces/         # Interfaces TypeScript
 │   ├── 📁 enums/              # Enumeraciones
 │   └── 📁 ...                 # Configuración de la app
-├── 📁 assets/                 # Recursos estáticos
-├── 📁 environments/           # Configuraciones de entorno
 └── 📄 ...                     # Archivos de configuración
 ```
 
@@ -207,7 +205,7 @@ Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más det
 
 **Jaime Hedrera Rosa** - *Desarrollador Full Stack*
 
-- **Portfolio**: [jaimehedrera.es](https://jaimehedrera.es)
+- **Portafolio**: [jaimehedrera.es](https://jaimehedrera.es)
 - **LinkedIn**: [Jaime Hedrera Rosa](https://www.linkedin.com/in/jaimehedrerarosa)
 - **Email**: [business@jaimehedrera.es](mailto:business@jaimehedrera.es)
 - **GitHub**: [@BetaGun03](https://github.com/BetaGun03)
